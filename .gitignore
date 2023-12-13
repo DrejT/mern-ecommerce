@@ -1,5 +1,10 @@
 client/package-lock.json
 server/package-lock.json
-client/node_modules/*
-server/node_modules/*
+client/node_modules/
+server/node_modules/
+
+node_modules/
+server/src/tests/
+server/.env
+.env
 .git

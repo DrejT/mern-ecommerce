@@ -1,3 +1,4 @@
+import Hero from "../components/hero";
 import Navbar from "../components/navbar";
 
 export default function Layout() {
@@ -5,6 +6,7 @@ export default function Layout() {
     <>
       <div className="container-fluid">
         <Navbar />
+        <Hero/>
       </div>
     </>
   );
