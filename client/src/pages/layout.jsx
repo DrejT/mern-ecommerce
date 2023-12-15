@@ -1,12 +1,15 @@
-import Hero from "../components/hero";
-import Navbar from "../components/navbar";
+import Footer from "../components/footer.layout";
+import "./layout.styles.css";
+import NavigationBar from "../components/navibar.layout";
+import { Outlet } from "react-router-dom";
 
 export default function Layout() {
   return (
     <>
-      <div className="container-fluid">
-        <Navbar />
-        <Hero/>
+      <div>
+        <NavigationBar />
+        <Outlet />
+        <Footer />
       </div>
     </>
   );
