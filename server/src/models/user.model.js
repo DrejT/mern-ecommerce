@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+const STORES_ENUM = [];
+
 const User = new mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true,
     unique: true,
@@ -18,6 +20,17 @@ const User = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+  stores: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Store",
+    },
+  ],
 });
 
 User.pre("save", async function (next) {
@@ -25,6 +38,17 @@ User.pre("save", async function (next) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
     this.password = hashedPassword;
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+User.pre("save", async function (next) {
+  try {
+    if (this.role === "user") {
+      this.stores = null;
+    }
     next();
   } catch (error) {
     next(error);

@@ -1,14 +1,12 @@
 // import "./navbar.styles.css";
 
-import { NavLink } from "react-router-dom";
-
 export default function NavigationBar() {
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            Navbar
+          <a className="navbar-brand" href="/">
+            Company Name
           </a>
           <button
             className="navbar-toggler"
