@@ -1,13 +1,16 @@
 // import "./navbar.styles.css";
 
+import { Link, NavLink, useLocation } from "react-router-dom";
+
 export default function NavigationBar() {
+  const location = useLocation();
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <NavLink className="navbar-brand" to="/">
             Company Name
-          </a>
+          </NavLink>
           <button
             className="navbar-toggler"
             type="button"
@@ -25,34 +28,40 @@ export default function NavigationBar() {
           >
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">
+                <NavLink className="nav-link active" aria-current="page" to="/">
                   Home
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="products">
+                <NavLink className="nav-link" to="products">
                   Products
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="services">
+                <NavLink className="nav-link" to="services">
                   Services
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="pricing">
+                <NavLink className="nav-link" to="pricing">
                   Pricing
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="contact">
+                <NavLink className="nav-link" to="contact">
                   Contact
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="register">
-                  Sign Up
-                </a>
+                {location.pathname === "/register" ? (
+                  <NavLink className="nav-link" to="login">
+                    Login
+                  </NavLink>
+                ) : (
+                  <NavLink className="nav-link" to="register">
+                    Sign Up
+                  </NavLink>
+                )}
               </li>
             </ul>
           </div>

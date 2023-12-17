@@ -37,15 +37,11 @@ function LoginForm() {
       password: string().required("this field is required"),
     }),
     onSubmit: async function (values) {
-      console.log(values);
       try {
         const responseData = await ax.post("/auth/login", values, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
         });
-        // const userData = axios.get("/auth/users", {
-        //   withCredentials: true,
-        // });
 
         console.log(responseData);
         if (responseData?.status === 200) {
@@ -91,8 +87,6 @@ function LoginForm() {
       }
     },
   });
-  console.log(formik.touched);
-
   return (
     <>
       <div className="container" style={{ marginTop: "7rem" }}>
