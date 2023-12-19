@@ -1,5 +1,4 @@
 const UserModel = require("../models/user.model");
-const { signAccessToken } = require("../utils/jwt");
 const createError = require("http-errors");
 
 async function register(req, res, next) {
@@ -34,6 +33,17 @@ async function register(req, res, next) {
   }
 }
 
+async function getUserById(req, res, next) {
+  try {
+    console.log(req.session)
+    const user = await UserModel.findById(req.params.id, "-password");
+    res.status(200).send(user);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   register,
+  getUserById
 };

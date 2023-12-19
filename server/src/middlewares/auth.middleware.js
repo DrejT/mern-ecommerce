@@ -74,6 +74,7 @@ async function filterLogin(req, res, next) {
 
 async function sendLogin(req, res, next) {
   try {
+    console.log(req.session)
     res.status(200).send(req.session);
   } catch (error) {
     next(error);

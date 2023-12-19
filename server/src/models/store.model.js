@@ -4,14 +4,15 @@ const store = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
-  business_email: {
+  businessEmail: {
     type: String,
     lowercase: true,
     unique: true,
     required: true,
   },
-  desc: {
+  description: {
     type: String,
     required: true,
   },

@@ -2,7 +2,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const createError = require("http-errors");
 
-function signAccessToken(userid) {
+function signAccessToken(userUid) {
   return new Promise((resolve, reject) => {
     const payload = {
       userid,

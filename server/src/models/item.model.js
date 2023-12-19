@@ -11,6 +11,10 @@ const item = new mongoose.Schema({
     lowercase: true,
     required: true,
   },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
   sale: {
     type: Number,
   },
