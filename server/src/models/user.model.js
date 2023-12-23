@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-const STORES_ENUM = [];
-
 const User = new mongoose.Schema({
   username: {
     type: String,
@@ -25,6 +23,12 @@ const User = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  address: {
+    type:String
+  },
+  pincode:{
+    type:Number
+  },
   stores: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -35,9 +39,11 @@ const User = new mongoose.Schema({
 
 User.pre("save", async function (next) {
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(this.password, salt);
-    this.password = hashedPassword;
+    if (this.isNew) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(this.password, salt);
+      this.password = hashedPassword;
+    }
     next();
   } catch (error) {
     next(error);
@@ -46,7 +52,7 @@ User.pre("save", async function (next) {
 
 User.pre("save", async function (next) {
   try {
-    if (this.role === "user") {
+    if (this.role === "user" && this.stores.length === 0) {
       this.stores = null;
     }
     next();
@@ -57,10 +63,11 @@ User.pre("save", async function (next) {
 
 User.methods.isPasswordValid = async function (password) {
   try {
+    console.log(password, this.password);
     return await bcrypt.compare(password, this.password);
   } catch (error) {
     throw error;
   }
 };
 
-module.exports = mongoose.model("user", User);
+module.exports = mongoose.model("User", User);

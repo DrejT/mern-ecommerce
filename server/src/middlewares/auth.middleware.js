@@ -14,6 +14,31 @@ const createError = require("http-errors");
 //   }
 // });
 
+async function authorizeUserSession(req, res, next) {
+  try {
+    console.log("session is", req.session);
+    if (!req.session) {
+      throw createError.Unauthorized("You are unauthorized");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function authorizeAdminSession(req, res, next) {
+  try {
+    console.log(req.session);
+    // req.session.reload((err) => console.log(err));
+    if (!(req.session?.user?.role === "admin")) {
+      throw createError.Unauthorized("You are unauthorized");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function validateRegisterSchema(req, res, next) {
   try {
     const result = await registerAuthSchema.validateAsync(req.body);
@@ -40,51 +65,9 @@ async function validateLoginSchema(req, res, next) {
   }
 }
 
-async function fetchLogin(req, res, next) {
-  try {
-    const user = await UserModel.findOne({ username: req.result.username });
-    if (!user) {
-      throw createError.NotFound("user is not registered");
-    }
-    const validPassword = await user.isPasswordValid(req.result.password);
-    if (!validPassword) {
-      throw createError.Unauthorized("username or password not valid");
-    }
-    req.session.user = {
-      id: user.id,
-      username: user.username,
-      role: user.role,
-      stores: user.stores,
-    };
-    req.session.message = "login successful";
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function filterLogin(req, res, next) {
-  try {
-    delete req.session.user.password;
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function sendLogin(req, res, next) {
-  try {
-    console.log(req.session)
-    res.status(200).send(req.session);
-  } catch (error) {
-    next(error);
-  }
-}
-
 module.exports = {
+  authorizeUserSession,
+  authorizeAdminSession,
   validateRegisterSchema,
   validateLoginSchema,
-  fetchLogin,
-  filterLogin,
-  sendLogin,
 };

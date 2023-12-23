@@ -1,24 +1,30 @@
 const express = require("express");
 const {
   getStore,
+  getAllStore,
   createStore,
   editStore,
-  removeStore,
+  deleteStore,
 } = require("../controllers/store.controller");
 const {
   validateStoreCreateSchema,
   validateStoreGetSchema,
-  authorizeUserSession,
+  validateStoreDeleteSchema,
+  validateStoreEditSchema,
 } = require("../middlewares/store.middleware");
+const { authorizeAdminSession } = require("../middlewares/auth.middleware");
 
 const router = new express.Router();
 
-router.get("/:name", authorizeUserSession, validateStoreGetSchema, getStore);
+router.use(authorizeAdminSession);
 
-router.post("/create", validateStoreCreateSchema, createStore);
+router.get("/:id", validateStoreGetSchema, getStore);
+router.get("/", getAllStore);
 
-router.patch("/edit", editStore);
+router.post("/", validateStoreCreateSchema, createStore);
 
-router.delete("/remove", removeStore);
+router.patch("/", validateStoreEditSchema, editStore);
+
+router.delete("/:id", validateStoreDeleteSchema, deleteStore);
 
 module.exports = router;

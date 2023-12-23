@@ -8,21 +8,19 @@ const redisStore = new RedisStore({
   prefix: "myapp",
 });
 
+const CookieName = "Stoken";
 const sessionOptions = {
   secret: process.env.SESSION_ID_SECRET,
   store: redisStore,
-  name: "Stoken",
-  secure: false,
-  httpOnly: true,
+  name: CookieName,
   sameSite: "none",
-  cookie: { maxAge: 1000 * 60 * 60 },
+  cookie: {
+    maxAge: 1000 * 86400 * 3,
+    httpOnly: true,
+    secure: false,
+  },
   resave: false,
   saveUninitialized: false,
-  // cookie: {
-  //   secure: false,
-  //   httpOnly: true,
-  //   // maxAge: 86400 * 3,
-  // },
 };
 const createSession = session(sessionOptions);
 

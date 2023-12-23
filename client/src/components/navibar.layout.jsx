@@ -1,9 +1,24 @@
-// import "./navbar.styles.css";
+import "./navibar.styles.css";
 
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, redirect, useLocation } from "react-router-dom";
+import { useAuth } from "../utils/authcontext";
+import ax from "./../utils/axios";
 
 export default function NavigationBar() {
+  const { setIsLoggedIn, isLoggedIn, authUser, setAuthUser } = useAuth();
+  console.log("logged in ?", isLoggedIn, authUser);
   const location = useLocation();
+  async function handleLogout() {
+    try {
+      const res = await ax.delete("/auth/logout");
+      setIsLoggedIn(false);
+      setAuthUser(null);
+      console.log(res);
+      redirect("/");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -53,7 +68,19 @@ export default function NavigationBar() {
                 </NavLink>
               </li>
               <li className="nav-item">
-                {location.pathname === "/register" ? (
+                {isLoggedIn === true && authUser.role === "user" ? (
+                  <>
+                    <NavLink className="nav-link" to={authUser.username}>
+                      {authUser.username}
+                    </NavLink>
+                  </>
+                ) : isLoggedIn === true ? (
+                  <>
+                    <NavLink className="nav-link" to="/dashboard">
+                      {authUser.username}
+                    </NavLink>
+                  </>
+                ) : location.pathname === "/register" ? (
                   <NavLink className="nav-link" to="login">
                     Login
                   </NavLink>
@@ -63,6 +90,17 @@ export default function NavigationBar() {
                   </NavLink>
                 )}
               </li>
+              {isLoggedIn === true ? (
+                <>
+                  <li className="nav-item">
+                    <NavLink className="nav-link" to="/" onClick={handleLogout}>
+                      Logout
+                    </NavLink>
+                  </li>
+                </>
+              ) : (
+                <></>
+              )}
             </ul>
           </div>
         </div>

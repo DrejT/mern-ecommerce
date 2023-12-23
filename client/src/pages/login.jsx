@@ -6,6 +6,8 @@ import { object, string } from "yup";
 import { useState } from "react";
 import axios from "axios";
 import { API_URL } from "../constants";
+import { useAuth } from "../utils/authcontext";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ax = axios.create({
   baseURL: API_URL,
@@ -21,12 +23,13 @@ export default function Login() {
 
 function LoginForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { authUser, setAuthUser, IsLoggedIn, setIsLoggedIn } = useAuth();
   const [formStatus, setFormStatus] = useState({
     res: "",
     err: "",
     stat: "",
   });
-
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -43,10 +46,19 @@ function LoginForm() {
           headers: { "Content-Type": "application/json" },
         });
 
-        console.log(responseData);
+        // const user = await ax.get("/auth/" + responseData.data.user.id, {
+        //   withCredentials: true,
+        // });
         if (responseData?.status === 200) {
+          queryClient.setQueryData("user", responseData.data.user);
           setFormStatus({ res: "loggedin successfully!", stat: true });
-          navigate("/");
+          setAuthUser(responseData.data.user);
+          setIsLoggedIn(true);
+          if (responseData?.data?.user?.role === "user") {
+            navigate("/");
+          } else {
+            navigate(`/dashboard`);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -57,12 +69,12 @@ function LoginForm() {
               stat: false,
             });
             break;
-          case 422:
-            setFormStatus({
-              err: error.response.data.error.message,
-              stat: false,
-            });
-            break;
+          // case 422:
+          //   setFormStatus({
+          //     err: error.response.data.error.message,
+          //     stat: false,
+          //   });
+          //   break;
           case 401:
             setFormStatus({
               err: error.response.data.error.message,
@@ -82,8 +94,6 @@ function LoginForm() {
             });
             break;
         }
-        // console.log(error.response.status);
-        // console.log(error.response.data.error.message);
       }
     },
   });

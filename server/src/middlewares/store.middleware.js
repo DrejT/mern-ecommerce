@@ -1,6 +1,10 @@
 const {
+  handleJoiError,
   storeCreateSchema,
   storeGetSchema,
+  storeEditSchema,
+  storeDeleteSchema,
+  mongoIdObjectSchema,
 } = require("../utils/validateschema");
 const StoreModel = require("./../models/store.model");
 const createError = require("http-errors");
@@ -11,41 +15,50 @@ async function validateStoreCreateSchema(req, res, next) {
     req.result = result;
     next();
   } catch (error) {
-    if (error.isJoi === true) {
-      error.status = 422;
-    }
+    handleJoiError(error);
     next(error);
   }
 }
 
 async function validateStoreGetSchema(req, res, next) {
   try {
-    const result = await storeGetSchema.validateAsync(req.params.name);
-    console.log(result);
+    const result = await storeGetSchema.validateAsync(req.params.id);
     req.result = result;
     next();
   } catch (error) {
-    if (error.isJoi === true) {
-      error.status = 422;
-    }
+    handleJoiError(error);
     next(error);
   }
 }
 
-async function authorizeUserSession(req, res, next) {
+async function validateStoreEditSchema(req, res, next) {
   try {
-    console.log("session is", req.session);
-    if (!req.session) {
-      throw createError.Unauthorized("You are unauthorized");
-    }
+    const result = await storeEditSchema.validateAsync(req.body.data);
+    const resultId = await mongoIdObjectSchema.validateAsync(req.body.storeId);
+    req.result = {};
+    req.result.data = result
+    req.result.id = resultId;
     next();
   } catch (error) {
+    handleJoiError(error);
+    next(error);
+  }
+}
+
+async function validateStoreDeleteSchema(req, res, next) {
+  try {
+    const result = await storeDeleteSchema.validateAsync(req.params.id);
+    req.result = result;
+    next();
+  } catch (error) {
+    handleJoiError(error);
     next(error);
   }
 }
 
 module.exports = {
   validateStoreCreateSchema,
-  authorizeUserSession,
   validateStoreGetSchema,
+  validateStoreEditSchema,
+  validateStoreDeleteSchema,
 };

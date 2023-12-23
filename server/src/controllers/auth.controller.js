@@ -35,7 +35,7 @@ async function register(req, res, next) {
 
 async function getUserById(req, res, next) {
   try {
-    console.log(req.session)
+    console.log(req.session);
     const user = await UserModel.findById(req.params.id, "-password");
     res.status(200).send(user);
   } catch (error) {
@@ -43,7 +43,35 @@ async function getUserById(req, res, next) {
   }
 }
 
+async function login(req, res, next) {
+  try {
+    const user = await UserModel.findOne({ username: req.result.username });
+    if (!user) {
+      throw createError.NotFound("user is not registered");
+    }
+    const validPassword = await user.isPasswordValid(req.result.password);
+    if (!validPassword) {
+      throw createError.Unauthorized("username or password is invalid");
+    }
+    const stores = user.role === "user" ? null : user.stores;
+
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      stores: stores,
+    };
+    req.session.message = "login successful";
+    console.log(req.session);
+    console.log(req.sessionID);
+    res.status(200).send(req.session);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   register,
-  getUserById
+  getUserById,
+  login,
 };
