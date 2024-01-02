@@ -29,6 +29,7 @@ async function authorizeUserSession(req, res, next) {
 async function authorizeAdminSession(req, res, next) {
   try {
     console.log(req.session);
+    console.log(req.file)
     // req.session.reload((err) => console.log(err));
     if (!(req.session?.user?.role === "admin")) {
       throw createError.Unauthorized("You are unauthorized");

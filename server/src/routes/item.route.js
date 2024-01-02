@@ -4,21 +4,31 @@ const {
   validateItemCreateSchema,
   validateItemEditSchema,
   validateItemDeleteSchema,
+  validateItemGetAllSchema,
+  uploadImage,
 } = require("../middlewares/item.middleware");
 const {
-  createItem,
   getItem,
+  getAllItem,
+  createItem,
   editItem,
   deleteItem,
 } = require("../controllers/item.controller");
 const { authorizeAdminSession } = require("../middlewares/auth.middleware");
+const upload = require("../utils/multer");
 
 const router = new express.Router();
+
 router.get("/:id", validateItemGetSchema, getItem);
+router.get("/", authorizeAdminSession, validateItemGetAllSchema, getAllItem);
 
-router.get("/", authorizeAdminSession, validateItemGetSchema, getItem);
-
-router.post("/", validateItemCreateSchema, createItem);
+router.post(
+  "/",
+  upload.single("itemImage"),
+  validateItemCreateSchema,
+  uploadImage,
+  createItem
+);
 
 router.patch("/", validateItemEditSchema, editItem);
 

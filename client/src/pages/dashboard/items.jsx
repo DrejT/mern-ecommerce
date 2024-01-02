@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import { boolean, number, object, string } from "yup";
+import { array, boolean, mixed, number, object, string } from "yup";
+import ax from "../../utils/axios";
+import { useState } from "react";
 
-const itemValidationSchema = object({
+const itemValidationSchema = object().shape({
   name: string()
     .min(3, "minimum 3 characters")
     .max(100, "maximum 100 characters")
@@ -11,6 +13,19 @@ const itemValidationSchema = object({
     .min(10, "minimum 10 characters")
     .max(250, "maximum 250 characters")
     .required("item description is required"),
+  // itemImage: mixed().required("Image is required"),
+  // .test("fileSize", "File size is too large", (files) => {
+  //   let valid = true;
+  //   if (files) {
+  //     files.map((file) => {
+  //       const size = file.size / 1024 / 1024;
+  //       if (size > 10) {
+  //         valid = false;
+  //       }
+  //     });
+  //   }
+  //   return valid;
+  // })
   sale: number()
     .min(0, "cannot be lower than 0%")
     .max(100, "cannot exceed 100%")
@@ -23,18 +38,21 @@ const itemValidationSchema = object({
   onShelf: boolean(),
 });
 
-export default function ItemSelection() {
+export function ItemSelection({ setStoreSelection, storeSelection }) {
+  // console.log(storeSelection);
   const queryClient = useQueryClient();
   const stores = queryClient.getQueryData(["stores"]); // for store selection in option
   const mutation = useMutation({
-    mutationFn: (newStoreObj) => {
-      return ax.post("/admin/item/", newStoreObj, {
+    mutationFn: (newItemObj) => {
+      return ax.post("/admin/item", newItemObj, {
         withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["stores"] });
+      queryClient.invalidateQueries({ queryKey: ["items"] });
     },
   });
 
@@ -42,20 +60,51 @@ export default function ItemSelection() {
     initialValues: {
       name: "",
       description: "",
+      // itemImage: undefined,
       sale: 0,
       price: 0,
       quantity: 0,
       onShelf: false,
     },
     validationSchema: itemValidationSchema,
+    onSubmit: async function (value) {
+      try {
+        console.log(value);
+        const formdata = new FormData();
+        formdata.append("name", value.name);
+        formdata.append("description", value.description);
+        formdata.append("storeId", storeSelection);
+        formdata.append("itemImage", itemImage);
+        formdata.append("sale", value.sale);
+        formdata.append("price", value.price);
+        formdata.append("quantity", value.quantity);
+        formdata.append("onShelf", value.onShelf);
+        console.log(formdata);
+        const res = await mutation.mutateAsync(formdata);
+        console.log(res);
+        return res;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   });
+
+  const [itemImage, setItemImage] = useState("");
   return (
     <>
       <div className="d-inline">
-        <select>
+        <select
+          id="storeSelection"
+          value={storeSelection}
+          onChange={(e) => {
+            console.log("Selected value:", e.target.value);
+            setStoreSelection(e.target.value);
+          }}
+        >
+          <option value="">select a store</option>
           {stores?.data?.map((store) => {
             return (
-              <option key={store._id} value={store.name}>
+              <option key={store._id} value={store._id}>
                 {store.name}
               </option>
             );
@@ -92,7 +141,11 @@ export default function ItemSelection() {
               </div>
               <div className="modal-body">
                 <div className="container-fluid">
-                  <form action="" onSubmit={formik.handleSubmit}>
+                  <form
+                    action=""
+                    onSubmit={formik.handleSubmit}
+                    encType="multipart/form-data"
+                  >
                     <div className="col">
                       <label htmlFor="name" className="input-label">
                         Name
@@ -134,6 +187,27 @@ export default function ItemSelection() {
                           {formik.errors.description}
                         </small>
                       ) : null}
+                    </div>
+                    <div className="col">
+                      <label htmlFor="itemImage" className="form-label">
+                        Images
+                      </label>
+                      <input
+                        type="file"
+                        id="itemImage"
+                        name="itemImage"
+                        className="form-control"
+                        // accept="image/*"
+                        onChange={(e) => setItemImage(e.target.files[0])}
+                        // onBlur={formik.handleBlur}
+                        // value={formik.values.itemImage}
+                        required
+                      />
+                      {/* {formik.touched.itemImage && formik.errors.itemImage ? (
+                        <small className="error-message">
+                          {formik.errors.itemImage}
+                        </small>
+                      ) : null} */}
                     </div>
 
                     <div className="col">
@@ -247,7 +321,7 @@ export default function ItemSelection() {
                     <button
                       type="submit"
                       className="btn btn-primary my-2"
-                      data-bs-dismiss="modal"
+                      data-bs-dismiss={formik.isSuccess ? "modal" : ""}
                       disabled={formik.isSubmitting}
                     >
                       Create
@@ -272,7 +346,50 @@ export default function ItemSelection() {
   );
 }
 
-function ItemModal() {
-  // const {status,data,error} = useQuery({queryKey:"items", })
-  return <></>;
+export function ItemContent({ storeSelection }) {
+  // const queryClient = useQueryClient();
+  const { status, data, error } = useQuery({
+    queryKey: ["items"],
+    queryFn: fetchItems,
+    staleTime: 30000,
+  });
+  async function fetchItems() {
+    try {
+      const items = await ax.get("/admin/item/", { withCredentials: true });
+      return items;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  // const itemsList = queryClient.getQueryData(["items"]);
+  // console.log(data);
+  return (
+    <>
+      {
+        <div className="col">
+          {status === "pending" ? (
+            <>
+              <p>loading...</p>
+            </>
+          ) : status === "error" ? (
+            <>
+              <p>An error occured</p>
+            </>
+          ) : (
+            data?.data?.map((obj) => {
+              if (storeSelection === obj.storeId) {
+                return (
+                  <div key={obj._id}>
+                    <p>{obj.name}</p>
+                  </div>
+                );
+              } else {
+                return null;
+              }
+            })
+          )}
+        </div>
+      }
+    </>
+  );
 }
