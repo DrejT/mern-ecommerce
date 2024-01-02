@@ -42,7 +42,8 @@ export function StoreModalForm() {
     onSubmit: async function (values) {
       try {
         const res = await mutation.mutateAsync(values);
-        console.log(res);
+        // console.log(res);
+        return res;
       } catch (error) {
         console.log(error.message);
       }
@@ -191,6 +192,7 @@ export function Store() {
   const { status, data, error } = useQuery({
     queryKey: ["stores"],
     queryFn: fetchStores,
+    staleTime: 30000,
   });
   async function fetchStores() {
     try {

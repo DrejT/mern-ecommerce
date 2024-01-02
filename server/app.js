@@ -15,6 +15,7 @@ const storeRouter = require("./src/routes/store.route");
 const itemRouter = require("./src/routes/item.route");
 const reviewRouter = require("./src/routes/review.route");
 const { createSession } = require("./src/utils/session");
+const upload = require("./src/utils/multer");
 // express config
 const app = express();
 app.use(express.json());
@@ -34,6 +35,14 @@ app.get("/", async (req, res) => {
   // console.log(req.session);
   console.log(req.cookies);
   res.send("hello world");
+});
+app.post("/upload", upload.single("itemImage"), async (req, res, next) => {
+  try {
+    console.log(req.file);
+    next();
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.use("/auth", authRouter);

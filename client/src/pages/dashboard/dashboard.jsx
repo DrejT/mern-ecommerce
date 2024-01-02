@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { OrderSection, ReviewSection, SettingSection } from "./activeStatus";
 import { StoreModalForm, Store } from "./stores";
-import Item from "./items";
-import ItemSelection from "./items";
+// import Item from "./items";
+import { ItemSelection, ItemContent } from "./items";
 
 export default function Dashboard() {
   const [currentlyActive, setCurrentlyActive] = useState("store");
+  const [storeSelection, setStoreSelection] = useState("");
   return (
     <>
       <div className="container-fluid p-5">
@@ -32,10 +33,17 @@ export default function Dashboard() {
             />
           </div>
           <div id="Selection" className="row  m-0">
-            <Selection currentlyActive={currentlyActive} />
+            <Selection
+              currentlyActive={currentlyActive}
+              storeSelection={storeSelection}
+              setStoreSelection={setStoreSelection}
+            />
           </div>
           <div id="content" className="col">
-            <DashboardContent currentlyActive={currentlyActive} />
+            <DashboardContent
+              currentlyActive={currentlyActive}
+              storeSelection={storeSelection}
+            />
           </div>
         </div>
       </div>
@@ -97,10 +105,10 @@ function DashboardMenu({ setCurrentlyActive, currentlyActive }) {
   );
 }
 
-function DashboardContent({ currentlyActive }) {
+function DashboardContent({ currentlyActive, storeSelection }) {
   switch (currentlyActive) {
     case "items":
-      return <></>;
+      return <ItemContent storeSelection={storeSelection}/>;
     case "orders":
       return <OrderSection />;
     case "reviews":
@@ -112,10 +120,15 @@ function DashboardContent({ currentlyActive }) {
   }
 }
 
-function Selection({ currentlyActive }) {
+function Selection({ currentlyActive, setStoreSelection, storeSelection }) {
   switch (currentlyActive) {
     case "items":
-      return <ItemSelection />;
+      return (
+        <ItemSelection
+          setStoreSelection={setStoreSelection}
+          storeSelection={storeSelection}
+        />
+      );
     case "orders":
       return <></>;
     case "reviews":

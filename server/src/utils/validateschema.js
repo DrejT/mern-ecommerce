@@ -66,32 +66,34 @@ const storeDeleteSchema = mongoIdObjectSchema.required();
 
 const itemNameSchema = joi.string().max(250);
 const itemDescrptionSchema = joi.string().max(500);
-const itemImageUrlSchema = joi.string();
+const itemImageSchema = joi.any();
 const itemSaleSchema = joi.number();
 const itemPriceSchema = joi.number();
-const itemAmountSchema = joi.number();
+const itemQuantitySchema = joi.number();
 const itemOnShelfSchema = joi.boolean();
 
 const ItemCreateSchema = joi.object({
   name: itemNameSchema.required(),
+  storeId: mongoIdObjectSchema.required(),
   description: itemDescrptionSchema.required(),
-  imageUrl: itemImageUrlSchema.required(),
+  itemImage: itemImageSchema,
   sale: itemSaleSchema.required(),
   price: itemPriceSchema.required(),
-  amount: itemAmountSchema.required(),
+  quantity: itemQuantitySchema.required(),
   onShelf: itemOnShelfSchema.required(),
 });
 
 const itemGetSchema = mongoIdObjectSchema.required();
+const itemGetAllSchema = joi.array().items(mongoIdObjectSchema.required());
 
 const itemEditSchema = joi.object({
   itemId: mongoIdObjectSchema,
   name: itemNameSchema,
   description: itemDescrptionSchema,
-  imageUrl: itemImageUrlSchema,
+  itemImage: itemImageSchema,
   sale: itemSaleSchema,
   price: itemPriceSchema,
-  amount: itemAmountSchema,
+  quantity: itemQuantitySchema,
   onShelf: itemOnShelfSchema,
 });
 
@@ -136,6 +138,7 @@ module.exports = {
   // item schemas
   ItemCreateSchema,
   itemGetSchema,
+  itemGetAllSchema,
   itemEditSchema,
   itemDeleSchema,
 

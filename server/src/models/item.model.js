@@ -6,13 +6,17 @@ const item = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  storeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Store",
+    required: true,
+  },
   description: {
     type: String,
     require: true,
   },
   imageUrl: {
     type: String,
-    required: true,
   },
   sale: {
     type: Number,

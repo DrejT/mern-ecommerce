@@ -21,7 +21,7 @@ async function getAllStore(req, res, next) {
     if (!storesList) {
       return res.status(404).send("no stores found");
     }
-    console.log(storesList);
+    // console.log(storesList);
     res.status(200).send(storesList);
   } catch (error) {
     next(error);
