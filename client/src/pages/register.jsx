@@ -1,14 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { object, string } from "yup";
-import axios from "axios";
+import ax from './../utils/axios'
 import "./register.style.css";
 import { useState } from "react";
-import { API_URL } from "./../constants";
-
-const ax = axios.create({
-  baseURL: API_URL,
-});
 
 export default function Register() {
   return (
@@ -44,20 +39,18 @@ function RegisterForm() {
         .required("this field is required"),
     }),
     onSubmit: async function (values) {
-      console.log(values);
       try {
         const responseData = await ax.post("/auth/register", values, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
         });
-        console.log(responseData.status);
-        // console.log(responseData.data.accessToken);
+        // const res = await ax.get("/admin/store/mystore");
+        // console.log("the store",res)
         if (responseData?.status === 200) {
           setFormStatus({ res: "registered successfully!", stat: true });
           navigate("/login");
         }
       } catch (error) {
-        console.log(formik);
         switch (error?.response?.status) {
           case 409:
             setFormStatus({
@@ -78,12 +71,9 @@ function RegisterForm() {
             });
             break;
         }
-        console.log(error.response.status);
-        console.log(error.response.data.error.message);
       }
     },
   });
-  console.log(formik.touched);
 
   return (
     <>
@@ -124,7 +114,7 @@ function RegisterForm() {
                     E-mail
                   </label>
                   <input
-                    type="text"
+                    type="email"
                     id="email"
                     name="email"
                     autoComplete="email"

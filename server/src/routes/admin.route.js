@@ -3,22 +3,15 @@ const {
   validateAdminRegisterSchema,
   validateAdminLoginSchema,
 } = require("../middlewares/admin.middleware");
-const { register } = require("../controllers/auth.controller");
-const {
-  fetchLogin,
-  filterLogin,
-  sendLogin,
-} = require("../middlewares/auth.middleware");
+const { register, login } = require("../controllers/auth.controller");
+const { createSession } = require("../utils/session");
 
 const router = new express.Router();
 
 router.post("/register", validateAdminRegisterSchema, register);
-router.post(
-  "/login",
-  validateAdminLoginSchema,
-  fetchLogin,
-  filterLogin,
-  sendLogin
-);
+
+// express session object which helps in creating sessions
+// router.use(createSession);
+router.post("/login", validateAdminLoginSchema, login);
 
 module.exports = router;

@@ -6,10 +6,9 @@ const item = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  email: {
+  description: {
     type: String,
-    lowercase: true,
-    required: true,
+    require: true,
   },
   imageUrl: {
     type: String,
@@ -17,17 +16,28 @@ const item = new mongoose.Schema({
   },
   sale: {
     type: Number,
+    default: 0,
   },
   price: {
     type: Number,
   },
-  amount: {
+  quantity: {
     type: Number,
   },
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Order",
+    },
+  ],
+  onShelf: {
+    type: Boolean,
+    default: false,
+  },
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Review",
     },
   ],
 });

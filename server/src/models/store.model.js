@@ -4,17 +4,19 @@ const store = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   businessEmail: {
     type: String,
-    lowercase: true,
-    unique: true,
     required: true,
   },
   description: {
     type: String,
     required: true,
+    max: 250,
   },
   items: [
     {
