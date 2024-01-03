@@ -10,9 +10,11 @@ const createError = require("http-errors");
 const morgan = require("morgan");
 // routes
 const authRouter = require("./src/routes/auth.route");
+const userRouter = require("./src/routes/user.route");
 const adminRouter = require("./src/routes/admin.route");
 const storeRouter = require("./src/routes/store.route");
 const itemRouter = require("./src/routes/item.route");
+const orderRouter = require("./src/routes/order.route");
 const reviewRouter = require("./src/routes/review.route");
 const { createSession } = require("./src/utils/session");
 const upload = require("./src/utils/multer");
@@ -46,6 +48,8 @@ app.post("/upload", upload.single("itemImage"), async (req, res, next) => {
 });
 
 app.use("/auth", authRouter);
+// app.use("/user/order", orderRouter);
+app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/admin/store", storeRouter);
 app.use("/admin/item", itemRouter);

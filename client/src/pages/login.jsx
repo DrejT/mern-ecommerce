@@ -55,7 +55,7 @@ function LoginForm() {
           setAuthUser(responseData.data.user);
           setIsLoggedIn(true);
           if (responseData?.data?.user?.role === "user") {
-            navigate("/");
+            navigate("/u/" + responseData.data.user.username);
           } else {
             navigate(`/dashboard`);
           }

@@ -70,7 +70,7 @@ export default function NavigationBar() {
               <li className="nav-item">
                 {isLoggedIn === true && authUser.role === "user" ? (
                   <>
-                    <NavLink className="nav-link" to={authUser.username}>
+                    <NavLink className="nav-link" to={"/u/"+authUser.username}>
                       {authUser.username}
                     </NavLink>
                   </>
@@ -101,6 +101,17 @@ export default function NavigationBar() {
               ) : (
                 <></>
               )}
+              <form className="d-flex" role="search">
+                <input
+                  className="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button className="btn btn-outline-success" type="submit">
+                  Search
+                </button>
+              </form>
             </ul>
           </div>
         </div>

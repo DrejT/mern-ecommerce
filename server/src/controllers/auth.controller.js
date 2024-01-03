@@ -63,7 +63,6 @@ async function login(req, res, next) {
     };
     req.session.message = "login successful";
     console.log(req.session);
-    console.log(req.sessionID);
     res.status(200).send(req.session);
   } catch (error) {
     next(error);

@@ -6,6 +6,6 @@ server/node_modules/
 node_modules/
 server/src/tests/
 server/.env
-ssrver/*.rdb
+server/*.rdb
 .env
 .git

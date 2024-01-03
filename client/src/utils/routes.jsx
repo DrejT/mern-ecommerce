@@ -8,6 +8,7 @@ import About from "./../pages/about";
 import Layout from "./../pages/layout";
 import Dashboard from "../pages/dashboard/dashboard";
 import App from "../App";
+import Profile from "../pages/profile";
 
 export default function AppRoutes() {
   return (
@@ -22,6 +23,9 @@ export default function AppRoutes() {
           <Route path="products" element={<Product />}></Route>
           <Route path="contact" element={<Contact />}></Route>
           <Route path="services" element={<About />}></Route>
+          <Route path="u">
+            <Route path=":username" element={<Profile />}></Route>
+          </Route>
         </Route>
         <Route path="dashboard" element={<Dashboard />}>
           <Route path="store" element={<About />}></Route>
