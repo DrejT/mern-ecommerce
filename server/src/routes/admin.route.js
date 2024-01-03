@@ -4,7 +4,7 @@ const {
   validateAdminLoginSchema,
 } = require("../middlewares/admin.middleware");
 const { register, login } = require("../controllers/auth.controller");
-const { createSession } = require("../utils/session");
+// const { createSession } = require("../utils/session");
 
 const router = new express.Router();
 

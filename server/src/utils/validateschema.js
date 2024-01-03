@@ -40,6 +40,10 @@ const adminLoginSchema = joi.object({
   password: passwordSchema,
 });
 
+// user schemas
+
+const getUserByUsernameSchema = usernameSchema;
+
 // store schemas
 
 const storeNameSchema = joi.string().max(250).lowercase();
@@ -97,8 +101,29 @@ const itemEditSchema = joi.object({
   onShelf: itemOnShelfSchema,
 });
 
-const itemDeleSchema = mongoIdObjectSchema.required();
+const itemDeleteSchema = mongoIdObjectSchema.required();
 
+// order schemas
+
+const orderForSchema = mongoIdObjectSchema;
+const orderBySchema = mongoIdObjectSchema;
+const orderStateSchema = joi.string().valid("Maharashtra", "Gujarat", "Goa");
+const OrderCitySchema = joi.string();
+const orderPincodeSchema = joi.string().length(6);
+const orderAddress1Schema = joi.string().max(50);
+const orderAddress2Schema = joi.string().max(50);
+
+const orderCreateSchema = joi.object({
+  for: orderForSchema.required(),
+  by: orderBySchema.required(),
+  state: orderStateSchema.required(),
+  city: OrderCitySchema,
+  pincode: orderPincodeSchema,
+  address1: orderAddress1Schema,
+  address2: orderAddress2Schema,
+});
+
+const orderGetSchema = orderBySchema;
 // review schemas
 
 const reviewCommentSchema = joi.string().max(500);
@@ -129,6 +154,9 @@ module.exports = {
   adminRegisterSchema,
   adminLoginSchema,
 
+  // user Schemas
+  getUserByUsernameSchema,
+
   // store schemas
   storeCreateSchema,
   storeGetSchema,
@@ -140,7 +168,12 @@ module.exports = {
   itemGetSchema,
   itemGetAllSchema,
   itemEditSchema,
-  itemDeleSchema,
+  itemDeleteSchema,
+
+  // order schemas
+
+  orderCreateSchema,
+  orderGetSchema,
 
   // review Schemas
 
