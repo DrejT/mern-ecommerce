@@ -5,6 +5,7 @@ const {
   createStore,
   editStore,
   deleteStore,
+  getAllAdminStore,
 } = require("../controllers/store.controller");
 const {
   validateStoreCreateSchema,
@@ -19,7 +20,7 @@ const router = new express.Router();
 router.use(authorizeAdminSession);
 
 router.get("/:id", validateStoreGetSchema, getStore);
-router.get("/", getAllStore);
+router.get("/", getAllAdminStore);
 
 router.post("/", validateStoreCreateSchema, createStore);
 

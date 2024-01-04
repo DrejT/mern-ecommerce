@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
-const item = new mongoose.Schema({
+const Item = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
+  },
+  slug: {
+    type: String,
     unique: true,
   },
   storeId: {
@@ -46,4 +50,15 @@ const item = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Item", item);
+Item.pre("save", async function (next) {
+  try {
+    if (this.isModified("name")) {
+      this.slug = this.name.split(/\s+/).join("-").toLowerCase();
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+module.exports = mongoose.model("Item", Item);

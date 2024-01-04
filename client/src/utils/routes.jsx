@@ -9,6 +9,7 @@ import Layout from "./../pages/layout";
 import Dashboard from "../pages/dashboard/dashboard";
 import App from "../App";
 import Profile from "../pages/profile";
+import Store from "../pages/store";
 
 export default function AppRoutes() {
   return (
@@ -25,6 +26,13 @@ export default function AppRoutes() {
           <Route path="services" element={<About />}></Route>
           <Route path="u">
             <Route path=":username" element={<Profile />}></Route>
+          </Route>
+          <Route path="s">
+            <Route path=":storename" element={<Store />}>
+              <Route path="i">
+                <Route path=":itemname"></Route>
+              </Route>
+            </Route>
           </Route>
         </Route>
         <Route path="dashboard" element={<Dashboard />}>

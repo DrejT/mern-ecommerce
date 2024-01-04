@@ -36,6 +36,9 @@ async function validateItemGetSchema(req, res, next) {
 
 async function validateItemGetAllSchema(req, res, next) {
   try {
+    if (req.session.user.stores.length === 0) {
+      return res.status(200).send("no stores to fetch");
+    }
     const result = await itemGetAllSchema.validateAsync(
       req.session.user.stores
     );
@@ -74,23 +77,24 @@ async function validateItemDeleteSchema(req, res, next) {
 
 async function uploadImage(req, res, next) {
   try {
-    console.log("logging image in upload", req.file);
-    const base64String = req.file.buffer.toString("base64");
-    const formdata = new FormData();
-    formdata.append("image", base64String);
-    const res = await axios.post(
-      `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`,
-      formdata,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          // key: process.env.IMGBB_API_KEY,
-        },
-      }
-    );
-    console.log("res is", res);
+    // console.log("logging image in upload", req.file);
+    // const base64String = req.file.buffer.toString("base64");
+    // const formdata = new FormData();
+    // formdata.append("image", base64String);
+    // const res = await axios.post(
+    //   `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`,
+    //   formdata,
+    //   {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //       // key: process.env.IMGBB_API_KEY,
+    //     },
+    //   }
+    // );
+    // console.log("res is", res);
     next();
   } catch (error) {
+    handleJoiError(error);
     next(error);
   }
 }
