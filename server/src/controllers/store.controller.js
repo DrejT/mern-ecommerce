@@ -15,13 +15,24 @@ async function getStore(req, res, next) {
   }
 }
 
-async function getAllStore(req, res, next) {
+async function getAllAdminStore(req, res, next) {
   try {
     const storesList = await StoreModel.find({ owner: req.session.user.id });
     if (!storesList) {
       return res.status(404).send("no stores found");
     }
-    // console.log(storesList);
+    res.status(200).send(storesList);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getAllUserStore(req, res, next) {
+  try {
+    const storesList = await StoreModel.find({}).populate("items");
+    if (!storesList) {
+      return res.status(404).send("no stores found");
+    }
     res.status(200).send(storesList);
   } catch (error) {
     next(error);
@@ -30,7 +41,6 @@ async function getAllStore(req, res, next) {
 
 async function createStore(req, res, next) {
   try {
-    console.log(req.session);
     const newUser = await UserModel.findById(req.session.user.id);
     if (!newUser) {
       return res.status(401).send("unauth");
@@ -42,8 +52,9 @@ async function createStore(req, res, next) {
       description: req.result.description,
     });
     const newStore = await store.save();
+    req.session.user.stores.push(newStore._id)
     newUser.stores.push(newStore);
-    const user = await newUser.save();
+    await newUser.save();
     res.status(200).send(newStore);
   } catch (error) {
     next(error);
@@ -82,7 +93,8 @@ async function deleteStore(req, res, next) {
 }
 module.exports = {
   getStore,
-  getAllStore,
+  getAllAdminStore,
+  getAllUserStore,
   createStore,
   editStore,
   deleteStore,

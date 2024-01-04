@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import { array, boolean, mixed, number, object, string } from "yup";
+import { boolean, number, object, string } from "yup";
 import ax from "../../utils/axios";
 import { useState } from "react";
 
@@ -39,13 +39,11 @@ const itemValidationSchema = object().shape({
 });
 
 export function ItemSelection({ setStoreSelection, storeSelection }) {
-  // console.log(storeSelection);
   const queryClient = useQueryClient();
   const stores = queryClient.getQueryData(["stores"]); // for store selection in option
   const mutation = useMutation({
     mutationFn: (newItemObj) => {
       return ax.post("/admin/item", newItemObj, {
-        withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -60,7 +58,6 @@ export function ItemSelection({ setStoreSelection, storeSelection }) {
     initialValues: {
       name: "",
       description: "",
-      // itemImage: undefined,
       sale: 0,
       price: 0,
       quantity: 0,
@@ -69,7 +66,6 @@ export function ItemSelection({ setStoreSelection, storeSelection }) {
     validationSchema: itemValidationSchema,
     onSubmit: async function (value) {
       try {
-        console.log(value);
         const formdata = new FormData();
         formdata.append("name", value.name);
         formdata.append("description", value.description);
@@ -79,9 +75,7 @@ export function ItemSelection({ setStoreSelection, storeSelection }) {
         formdata.append("price", value.price);
         formdata.append("quantity", value.quantity);
         formdata.append("onShelf", value.onShelf);
-        console.log(formdata);
         const res = await mutation.mutateAsync(formdata);
-        console.log(res);
         return res;
       } catch (error) {
         console.log(error);
@@ -96,10 +90,7 @@ export function ItemSelection({ setStoreSelection, storeSelection }) {
         <select
           id="storeSelection"
           value={storeSelection}
-          onChange={(e) => {
-            console.log("Selected value:", e.target.value);
-            setStoreSelection(e.target.value);
-          }}
+          onChange={(e) => setStoreSelection(e.target.value)}
         >
           <option value="">select a store</option>
           {stores?.data?.map((store) => {
@@ -306,7 +297,7 @@ export function ItemSelection({ setStoreSelection, storeSelection }) {
                     <div>
                       {mutation.isPending ? (
                         <>
-                          <small>creating new Store...</small>
+                          <small>creating new item...</small>
                         </>
                       ) : mutation.isError ? (
                         <>
@@ -314,14 +305,14 @@ export function ItemSelection({ setStoreSelection, storeSelection }) {
                         </>
                       ) : mutation.isSuccess ? (
                         <>
-                          <small>created store successfully</small>
+                          <small>created item successfully</small>
                         </>
                       ) : null}
                     </div>
                     <button
                       type="submit"
                       className="btn btn-primary my-2"
-                      data-bs-dismiss={formik.isSuccess ? "modal" : ""}
+                      data-bs-dismiss={"modal"}
                       disabled={formik.isSubmitting}
                     >
                       Create
@@ -355,14 +346,16 @@ export function ItemContent({ storeSelection }) {
   });
   async function fetchItems() {
     try {
-      const items = await ax.get("/admin/item/", { withCredentials: true });
+      const items = await ax.get("/admin/item/");
       return items;
     } catch (error) {
       console.log(error);
     }
   }
   // const itemsList = queryClient.getQueryData(["items"]);
-  // console.log(data);
+  console.log("items is", data);
+  console.log("storeseleciton is", storeSelection);
+  console.log("status is", status);
   return (
     <>
       {
@@ -371,10 +364,12 @@ export function ItemContent({ storeSelection }) {
             <>
               <p>loading...</p>
             </>
-          ) : status === "error" ? (
+          ) : status === "error" && storeSelection ? (
             <>
-              <p>An error occured</p>
+              <p>An error occured while fetching items</p>
             </>
+          ) : typeof data.data === "string" ? (
+            <>No stores to fetch data from </>
           ) : (
             data?.data?.map((obj) => {
               if (storeSelection === obj.storeId) {

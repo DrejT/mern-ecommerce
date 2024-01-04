@@ -46,6 +46,7 @@ async function getAllItem(req, res, next) {
     if (!items) {
       return res.status(404).send("no items found");
     }
+    console.log("req.result",req.result);
     res.status(200).send(items);
   } catch (error) {
     next(error);

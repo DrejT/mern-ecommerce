@@ -23,7 +23,6 @@ export function StoreModalForm() {
   const mutation = useMutation({
     mutationFn: (newStoreObj) => {
       return ax.post("/admin/store/", newStoreObj, {
-        withCredentials: true,
         headers: { "Content-Type": "application/json" },
       });
     },
@@ -45,7 +44,7 @@ export function StoreModalForm() {
         // console.log(res);
         return res;
       } catch (error) {
-        console.log(error.message);
+        console.log(error);
       }
     },
   });
