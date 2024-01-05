@@ -8,6 +8,7 @@ const ReviewSchema = new mongoose.Schema({
     type: Number,
     min: 1,
     max: 5,
+    default: 0,
   },
   item: {
     type: mongoose.Schema.Types.ObjectId,
@@ -16,6 +17,10 @@ const ReviewSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  username: {
+    type: String,
+    required: true,
   },
 });
 

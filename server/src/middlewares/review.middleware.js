@@ -20,6 +20,7 @@ async function validateReviewGetSchema(req, res, next) {
 
 async function validateReviewCreateSchema(req, res, next) {
   try {
+    req.body.userid = req.session.user.id;
     const result = await reviewCreateSChema.validateAsync(req.body);
     req.result = result;
     next();

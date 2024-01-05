@@ -3,10 +3,11 @@ import "./navibar.styles.css";
 import { Link, NavLink, redirect, useLocation } from "react-router-dom";
 import { useAuth } from "../utils/authcontext";
 import ax from "./../utils/axios";
+import { useQuery } from "@tanstack/react-query";
 
 export default function NavigationBar() {
   const { setIsLoggedIn, isLoggedIn, authUser, setAuthUser } = useAuth();
-  console.log("logged in ?", isLoggedIn, authUser);
+  // console.log("logged in ?", isLoggedIn, authUser);
   const location = useLocation();
   async function handleLogout() {
     try {
@@ -19,6 +20,25 @@ export default function NavigationBar() {
       console.log(error);
     }
   }
+  // const { data, status, error } = useQuery({
+  //   queryKey: ["user"],
+  //   queryFn: getUserSession,
+  //   staleTime: 30000,
+  // });
+
+  // async function getUserSession() {
+  //   try {
+  //     const res = await ax.get("/session");
+  //     console.log(res)
+  //     if (res.data) {
+  //       setAuthUser(res.data);
+  //       setIsLoggedIn(true);
+  //     }
+  //     return res.data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -70,7 +90,10 @@ export default function NavigationBar() {
               <li className="nav-item">
                 {isLoggedIn === true && authUser.role === "user" ? (
                   <>
-                    <NavLink className="nav-link" to={"/u/"+authUser.username}>
+                    <NavLink
+                      className="nav-link"
+                      to={"/u/" + authUser.username}
+                    >
                       {authUser.username}
                     </NavLink>
                   </>

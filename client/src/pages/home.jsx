@@ -65,7 +65,7 @@ function ShowStores() {
                         })}
                         {storeObj.items.length >= 5 ? (
                           <div className="col-12 d-flex justify-content-center">
-                            <Link to={`s/${storeObj.slug}`}>
+                            <Link to={`store/${storeObj.slug}`}>
                               <button className="btn btn-primary p-1 bg-white text-black">
                                 see more
                               </button>

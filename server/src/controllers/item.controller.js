@@ -38,6 +38,19 @@ async function getItem(req, res, next) {
   }
 }
 
+async function getUserItem(req, res, next) {
+  try {
+    const item = await ItemModel.findOne({ slug: req.params.slug });
+    if (!item) {
+      return res.status(404).send("item not found");
+    }
+    item.orders = null;
+    res.status(200).send(item);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getAllItem(req, res, next) {
   try {
     const items = await ItemModel.find({
@@ -46,7 +59,7 @@ async function getAllItem(req, res, next) {
     if (!items) {
       return res.status(404).send("no items found");
     }
-    console.log("req.result",req.result);
+    console.log("req.result", req.result);
     res.status(200).send(items);
   } catch (error) {
     next(error);
@@ -86,6 +99,7 @@ async function deleteItem(req, res, next) {
 module.exports = {
   getItem,
   getAllItem,
+  getUserItem,
   createItem,
   editItem,
   deleteItem,

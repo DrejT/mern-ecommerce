@@ -25,11 +25,10 @@ const Order = new mongoose.Schema(
     },
     address1: {
       type: String,
-      // required: true,
+      required: true,
     },
     address2: {
       type: String,
-      // required: true,
     },
   },
   { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } }

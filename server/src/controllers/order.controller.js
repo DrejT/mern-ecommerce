@@ -16,7 +16,7 @@ async function orderCreate(req, res, next) {
       return res.status(500).send("internal server error");
     }
     await order.save();
-    res.status(200).send(order);
+    res.status(200).send("order created successfully");
   } catch (error) {
     next(error);
   }
@@ -24,9 +24,9 @@ async function orderCreate(req, res, next) {
 
 async function orderGet(req, res, next) {
   try {
-    console.log("result",req.result);
+    console.log("result", req.result);
     const orders = await OrderModel.find({ by: req.result }).populate("for");
-    console.log("orders",orders);
+    console.log("orders", orders);
     res.status(200).send(orders);
   } catch (error) {
     next(error);
