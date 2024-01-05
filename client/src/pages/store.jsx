@@ -1,18 +1,36 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { Outlet, useParams, useResolvedPath } from "react-router-dom";
 import { ItemCard } from "../components/itemcard.home";
 import ax from "../utils/axios";
 
 export default function Store() {
+  const { pathname } = useResolvedPath();
+  console.log(pathname.split("item").length)
+  return (
+    <>
+      <div className="container">
+        {pathname.split("item").length === 1 ? (
+          <>
+            <DisplayStore />
+          </>
+        ) : (
+          <Outlet />
+        )}
+      </div>
+    </>
+  );
+}
+
+function DisplayStore() {
   const params = useParams();
   const { status, data, error } = useQuery({
-    queryKey: [params.storename],
+    queryKey: [params.storeslug],
     queryFn: fetchStore,
     staleTime: 30000,
   });
   async function fetchStore() {
     try {
-      const res = await ax.get(`/user/store/${params.storename}`);
+      const res = await ax.get(`/user/store/${params.storeslug}`);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -20,30 +38,28 @@ export default function Store() {
   }
   return (
     <>
-      <div className="container">
-        {status === "pending" ? (
-          <>Loading</>
-        ) : (
-          <>
-            <div className="row py-2 mt-3">
-              <h4>{data.name}</h4>
-              <p>{data.description}</p>
-            </div>
-            <div className="row">
-              {data.items.map((itemObj) => {
-                return (
-                  <div
-                    key={itemObj._id}
-                    className="col col-md-3 col-12 d-flex justify-content-center"
-                  >
-                    <ItemCard itemObj={itemObj} storeObj={data} />
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
-      </div>
+      {status === "pending" ? (
+        <>Loading</>
+      ) : (
+        <>
+          <div className="row py-2 mt-3">
+            <h4>{data.name}</h4>
+            <p>{data.description}</p>
+          </div>
+          <div className="row">
+            {data.items.map((itemObj) => {
+              return (
+                <div
+                  key={itemObj._id}
+                  className="col col-md-3 col-12 d-flex justify-content-center"
+                >
+                  <ItemCard itemObj={itemObj} storeObj={data} />
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
     </>
   );
 }

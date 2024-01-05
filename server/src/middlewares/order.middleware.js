@@ -5,6 +5,7 @@ const {
 
 async function validateOrderCreateSchema(req, res, next) {
   try {
+    req.body.by = req.session.user.id;
     const result = await orderCreateSchema.validateAsync(req.body);
     req.result = result;
     next();

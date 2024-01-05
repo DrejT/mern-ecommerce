@@ -110,16 +110,16 @@ const orderBySchema = mongoIdObjectSchema;
 const orderStateSchema = joi.string().valid("Maharashtra", "Gujarat", "Goa");
 const OrderCitySchema = joi.string();
 const orderPincodeSchema = joi.string().length(6);
-const orderAddress1Schema = joi.string().max(50);
-const orderAddress2Schema = joi.string().max(50);
+const orderAddress1Schema = joi.string();
+const orderAddress2Schema = joi.string().min(0);
 
 const orderCreateSchema = joi.object({
   for: orderForSchema.required(),
   by: orderBySchema.required(),
   state: orderStateSchema.required(),
-  city: OrderCitySchema,
-  pincode: orderPincodeSchema,
-  address1: orderAddress1Schema,
+  city: OrderCitySchema.required(),
+  pincode: orderPincodeSchema.required(),
+  address1: orderAddress1Schema.required(),
   address2: orderAddress2Schema,
 });
 
@@ -128,12 +128,16 @@ const orderGetSchema = orderBySchema;
 
 const reviewCommentSchema = joi.string().max(500);
 const reviewRatingSchema = joi.number().max(5).min(1);
+const reviewItemSchema = mongoIdObjectSchema;
+const reviewUserSchema = mongoIdObjectSchema;
 
 const reviewGetSChema = mongoIdObjectSchema.required();
 
 const reviewCreateSChema = joi.object({
   comment: reviewCommentSchema,
   rating: reviewRatingSchema.required(),
+  item: reviewItemSchema.required(),
+  userid: reviewUserSchema.required(),
 });
 
 const reviewEditSchema = joi.object({

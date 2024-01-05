@@ -12,12 +12,18 @@ const {
   validateReviewDeleteSchema,
   validateReviewEditSchema,
 } = require("../middlewares/review.middleware");
+const { authorizeUserSession } = require("../middlewares/auth.middleware");
 
 const router = new express.Router();
 
 router.get("/:id", validateReviewGetSchema, getReview);
 
-router.post("/", validateReviewCreateSchema, createReview);
+router.post(
+  "/",
+  authorizeUserSession,
+  validateReviewCreateSchema,
+  createReview
+);
 
 router.patch("/", validateReviewEditSchema, editReview);
 

@@ -27,6 +27,7 @@ const createSession = session(sessionOptions);
 async function destroySession(req, res, next) {
   try {
     req.session.destroy();
+    // redisStore.destroy(req.session.id);
     res.send("session destroyed");
   } catch (error) {
     next(error);
@@ -36,4 +37,5 @@ async function destroySession(req, res, next) {
 module.exports = {
   createSession,
   destroySession,
+  redisStore,
 };

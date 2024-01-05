@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Product from "./../pages/product";
 import Register from "./../pages/register";
 import Contact from "./../pages/contact";
@@ -10,6 +10,7 @@ import Dashboard from "../pages/dashboard/dashboard";
 import App from "../App";
 import Profile from "../pages/profile";
 import Store from "../pages/store";
+import Item from "../pages/item";
 
 export default function AppRoutes() {
   return (
@@ -27,12 +28,8 @@ export default function AppRoutes() {
           <Route path="u">
             <Route path=":username" element={<Profile />}></Route>
           </Route>
-          <Route path="s">
-            <Route path=":storename" element={<Store />}>
-              <Route path="i">
-                <Route path=":itemname"></Route>
-              </Route>
-            </Route>
+          <Route path="/store/:storeslug" element={<Store />}>
+            <Route path="item/:itemslug" element={<Item />}></Route>
           </Route>
         </Route>
         <Route path="dashboard" element={<Dashboard />}>

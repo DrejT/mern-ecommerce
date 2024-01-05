@@ -12,6 +12,8 @@ const {
   getAllUserStore,
   getUserStore,
 } = require("../controllers/store.controller");
+const { getUserReview } = require("./../controllers/review.controller");
+const { getUserItem } = require("../controllers/item.controller");
 
 const router = new express.Router();
 
@@ -19,6 +21,11 @@ const router = new express.Router();
 router.get("/store", getAllUserStore);
 router.get("/store/:slug", getUserStore);
 
+// public item route to get a specific item
+router.get("/item/:slug", getUserItem);
+
+// public route to get all the reviews of an item
+router.get("/review/:itemId", getUserReview);
 // user specific route to get all the orders of the currently logged in user
 router.get("/order", validateOrderGetSchema, orderGet);
 // allows to create an order
