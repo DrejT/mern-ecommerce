@@ -8,12 +8,16 @@ const {
   validateOrderCreateSchema,
 } = require("../middlewares/order.middleware");
 const { orderGet, orderCreate } = require("../controllers/order.controller");
-const { getAllUserStore } = require("../controllers/store.controller");
+const {
+  getAllUserStore,
+  getUserStore,
+} = require("../controllers/store.controller");
 
 const router = new express.Router();
 
 // public store route to get all the available stores
 router.get("/store", getAllUserStore);
+router.get("/store/:slug", getUserStore);
 
 // user specific route to get all the orders of the currently logged in user
 router.get("/order", validateOrderGetSchema, orderGet);
