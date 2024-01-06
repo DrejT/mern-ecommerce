@@ -107,6 +107,7 @@ const itemDeleteSchema = mongoIdObjectSchema.required();
 
 const orderForSchema = mongoIdObjectSchema;
 const orderBySchema = mongoIdObjectSchema;
+const orderStoreIdSchema = mongoIdObjectSchema;
 const orderStateSchema = joi.string().valid("Maharashtra", "Gujarat", "Goa");
 const OrderCitySchema = joi.string();
 const orderPincodeSchema = joi.string().length(6);
@@ -116,6 +117,7 @@ const orderAddress2Schema = joi.string().min(0);
 const orderCreateSchema = joi.object({
   for: orderForSchema.required(),
   by: orderBySchema.required(),
+  storeId: orderStoreIdSchema.required(),
   state: orderStateSchema.required(),
   city: OrderCitySchema.required(),
   pincode: orderPincodeSchema.required(),

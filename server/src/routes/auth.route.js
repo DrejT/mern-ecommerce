@@ -1,5 +1,5 @@
 const express = require("express");
-const { createSession, destroySession } = require("./../utils/session");
+const { destroySession } = require("./../utils/session");
 const {
   register,
   getUserById,

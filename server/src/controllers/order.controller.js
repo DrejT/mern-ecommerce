@@ -6,6 +6,7 @@ async function orderCreate(req, res, next) {
     const order = new OrderModel({
       for: req.result.for,
       by: req.result.by,
+      storeId: req.result.storeId,
       state: req.result.state,
       city: req.result.city,
       pincode: req.result.pincode,
@@ -24,9 +25,31 @@ async function orderCreate(req, res, next) {
 
 async function orderGet(req, res, next) {
   try {
-    console.log("result", req.result);
     const orders = await OrderModel.find({ by: req.result }).populate("for");
-    console.log("orders", orders);
+    res.status(200).send(orders);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getStoreOrders(req, res, next) {
+  try {
+    const orders = await OrderModel.find({ storeId: req.params.id });
+    if (!orders) {
+      return res.status(200).send("no orders found");
+    }
+    res.status(200).send(orders);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getAllOrders(req, res, next) {
+  try {
+    const orders = await OrderModel.find({}).populate("by for");
+    if (!orders) {
+      return res.status(200).send("no orders found");
+    }
     res.status(200).send(orders);
   } catch (error) {
     next(error);
@@ -36,4 +59,6 @@ async function orderGet(req, res, next) {
 module.exports = {
   orderCreate,
   orderGet,
+  getAllOrders,
+  getStoreOrders,
 };

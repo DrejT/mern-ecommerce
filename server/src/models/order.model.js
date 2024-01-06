@@ -10,6 +10,10 @@ const Order = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    storeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Store",
+    },
     state: {
       type: String,
       enum: ["Maharashtra", "Gujarat", "Goa"],

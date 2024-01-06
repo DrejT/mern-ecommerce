@@ -1,13 +1,14 @@
 const express = require("express");
+const { authorizeAdminSession } = require("../utils/session");
 const {
-  validateOrderCreateSchema,
-  validateOrderGetSchema,
-} = require("../middlewares/order.middleware");
-const { orderCreate, orderGet } = require("../controllers/order.controller");
-
+  getStoreOrders,
+  getAllOrders,
+} = require("../controllers/order.controller");
 const router = new express.Router();
 
-// router.get("/", validateOrderGetSchema, orderGet);
-// router.post("/", validateOrderCreateSchema, orderCreate);
+router.use(authorizeAdminSession);
+
+router.get("/:id", getStoreOrders);
+router.get("/", getAllOrders);
 
 module.exports = router;

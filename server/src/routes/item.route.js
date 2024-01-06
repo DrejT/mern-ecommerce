@@ -3,7 +3,6 @@ const {
   validateItemGetSchema,
   validateItemCreateSchema,
   validateItemEditSchema,
-  validateItemDeleteSchema,
   validateItemGetAllSchema,
   uploadImage,
 } = require("../middlewares/item.middleware");
@@ -14,13 +13,14 @@ const {
   editItem,
   deleteItem,
 } = require("../controllers/item.controller");
-const { authorizeAdminSession } = require("../middlewares/auth.middleware");
+const { authorizeAdminSession } = require("../utils/session");
 const upload = require("../utils/multer");
 
 const router = new express.Router();
 
+router.use(authorizeAdminSession);
 router.get("/:id", validateItemGetSchema, getItem);
-router.get("/", authorizeAdminSession, validateItemGetAllSchema, getAllItem);
+router.get("/", validateItemGetAllSchema, getAllItem);
 
 router.post(
   "/",
@@ -30,8 +30,8 @@ router.post(
   createItem
 );
 
-router.patch("/", validateItemEditSchema, editItem);
+router.patch("/:slug", validateItemEditSchema, editItem);
 
-router.delete("/:id", validateItemDeleteSchema, deleteItem);
+router.delete("/:slug", deleteItem);
 
 module.exports = router;

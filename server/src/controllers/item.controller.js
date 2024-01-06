@@ -14,7 +14,7 @@ async function createItem(req, res, next) {
       imageUrl: req.result.imageUrl,
       sale: req.result.sale,
       price: req.result.price,
-      amount: req.result.amount,
+      quantity: req.result.quantity,
       onShelf: req.result.onShelf,
     });
     const item = await newItem.save();
@@ -69,14 +69,14 @@ async function getAllItem(req, res, next) {
 async function editItem(req, res, next) {
   try {
     const item = await ItemModel.findOneAndUpdate(
-      { _id: req.result.id },
-      req.result.data,
+      { slug: req.params.slug },
+      req.result,
       { new: true }
     );
     if (!item) {
       return res.status(404).send("item not found");
     }
-
+    await item.save();
     res.status(200).send(item);
   } catch (error) {
     next(error);
@@ -85,11 +85,10 @@ async function editItem(req, res, next) {
 
 async function deleteItem(req, res, next) {
   try {
-    const item = await ItemModel.deleteOne({ _id: req.result });
+    const item = await ItemModel.deleteOne({ slug: req.params.slug });
     if (!item) {
       return res.status(404).send("item not found");
     }
-
     res.status(200).send(item);
   } catch (error) {
     next(error);

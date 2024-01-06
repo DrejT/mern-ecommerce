@@ -20,14 +20,46 @@ const sessionOptions = {
     secure: false,
   },
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
 };
 const createSession = session(sessionOptions);
+
+async function authorizeUserSession(req, res, next) {
+  try {
+    if (!req.session.user) {
+      throw createError.Unauthorized("You are unauthorized");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function revalidateUserSession(req, res, next) {
+  try {
+    if (req.session.user) {
+      return res.status(200).send(req.session.user);
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function authorizeAdminSession(req, res, next) {
+  try {
+    console.log(req.file);
+    if (!(req.session?.user?.role === "admin")) {
+      throw createError.Unauthorized("You are unauthorized");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
 
 async function destroySession(req, res, next) {
   try {
     req.session.destroy();
-    // redisStore.destroy(req.session.id);
     res.send("session destroyed");
   } catch (error) {
     next(error);
@@ -37,5 +69,7 @@ async function destroySession(req, res, next) {
 module.exports = {
   createSession,
   destroySession,
-  redisStore,
+  authorizeUserSession,
+  revalidateUserSession,
+  authorizeAdminSession
 };
