@@ -14,7 +14,7 @@ async function createItem(req, res, next) {
       imageUrl: req.result.imageUrl,
       sale: req.result.sale,
       price: req.result.price,
-      amount: req.result.amount,
+      quantity: req.result.quantity,
       onShelf: req.result.onShelf,
     });
     const item = await newItem.save();

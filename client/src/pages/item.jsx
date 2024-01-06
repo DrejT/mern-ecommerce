@@ -31,7 +31,7 @@ export default function Item() {
             <ItemDisplay item={data} />
           </div>
           <div className="col col-md-6 col-12">
-            <ItemOrder item={data} />
+            {data.quantity > 0 ? <ItemOrder item={data} /> : <>out of stock</>}
           </div>
           <div className="col col-12 p-2">
             <ItemReview item={data} />

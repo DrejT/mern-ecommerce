@@ -79,15 +79,15 @@ async function createStore(req, res, next) {
 async function editStore(req, res, next) {
   try {
     const store = await StoreModel.findOneAndUpdate(
-      { _id: req.result.id },
-      req.result.data,
+      { slug: req.params.slug },
+      req.result,
       { new: true }
     );
     if (!store) {
       console.error("Store not found for update");
       return res.status(404).send({ error: "Store not found for update" });
     }
-
+    await store.save();
     res.status(200).send(store);
   } catch (error) {
     next(error);
@@ -96,7 +96,7 @@ async function editStore(req, res, next) {
 
 async function deleteStore(req, res, next) {
   try {
-    const store = await StoreModel.deleteOne({ _id: req.result });
+    const store = await StoreModel.deleteOne({ slug: req.params.slug });
     if (!store) {
       return res.status(404).send("store not found");
     }

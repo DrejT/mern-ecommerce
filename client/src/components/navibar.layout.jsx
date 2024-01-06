@@ -1,9 +1,8 @@
 import "./navibar.styles.css";
 
-import { Link, NavLink, redirect, useLocation } from "react-router-dom";
+import { NavLink, redirect, useLocation } from "react-router-dom";
 import { useAuth } from "../utils/authcontext";
 import ax from "./../utils/axios";
-import { useQuery } from "@tanstack/react-query";
 
 export default function NavigationBar() {
   const { setIsLoggedIn, isLoggedIn, authUser, setAuthUser } = useAuth();
@@ -15,24 +14,6 @@ export default function NavigationBar() {
       setIsLoggedIn(false);
       setAuthUser(null);
       redirect("/");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  useQuery({
-    queryKey: ["user"],
-    queryFn: getUserSession,
-    staleTime: 30000,
-  });
-
-  async function getUserSession() {
-    try {
-      const res = await ax.get("/session");
-      if (res.data) {
-        setAuthUser(res.data);
-        setIsLoggedIn(true);
-      }
-      return res.data;
     } catch (error) {
       console.log(error);
     }

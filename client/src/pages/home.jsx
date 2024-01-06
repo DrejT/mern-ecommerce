@@ -54,14 +54,19 @@ function ShowStores() {
                     {storeObj.items.length ? (
                       <>
                         {storeObj?.items?.slice(0, 4).map((itemObj) => {
-                          return (
-                            <div
-                              key={itemObj.slug}
-                              className="col col-md-3 col-12 d-flex justify-content-center"
-                            >
-                              <ItemCard itemObj={itemObj} storeObj={storeObj} />
-                            </div>
-                          );
+                          if (itemObj.onShelf) {
+                            return (
+                              <div
+                                key={itemObj.slug}
+                                className="col col-md-3 col-12 d-flex justify-content-center"
+                              >
+                                <ItemCard
+                                  itemObj={itemObj}
+                                  storeObj={storeObj}
+                                />
+                              </div>
+                            );
+                          }
                         })}
                         {storeObj.items.length >= 5 ? (
                           <div className="col-12 d-flex justify-content-center">

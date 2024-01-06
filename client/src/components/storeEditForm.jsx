@@ -1,25 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { object, string } from "yup";
-import ax from "../../utils/axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import { StoreDeleteForm, StoreEditForm } from "../../components/storeEditForm";
+import { object } from "yup";
+import {
+  storeBusinessEmailSchema,
+  storeDescriptionSchema,
+  storeNameSchema,
+} from "../pages/dashboard/stores";
+import ax from "../utils/axios";
 
-// form validation schema
-
-export const storeNameSchema = string()
-  .min(3, "minimum 3 characters")
-  .max(100, "maximum 100 characters");
-export const storeBusinessEmailSchema = string().email("enter a valid email");
-
-export const storeDescriptionSchema = string()
-  .min(10, "minimum 10 characters")
-  .max(250, "maximum 250 characters");
-
-export function StoreModalForm() {
+export function StoreEditForm({ storeObj }) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (newStoreObj) => {
-      return ax.post("/admin/store/", newStoreObj, {
+    mutationFn: (values) => {
+      return ax.patch(`/admin/store/${storeObj.slug}`, values, {
         headers: { "Content-Type": "application/json" },
       });
     },
@@ -27,23 +20,22 @@ export function StoreModalForm() {
       queryClient.invalidateQueries({ queryKey: ["stores"] });
     },
   });
-
   const formik = useFormik({
     initialValues: {
-      name: "",
-      businessEmail: "",
-      description: "",
+      name: storeObj.name,
+      description: storeObj.description,
+      businessEmail: storeObj.businessEmail,
     },
     validationSchema: object({
-      name: storeNameSchema.required(),
-      description: storeDescriptionSchema.required(),
-      businessEmail: storeBusinessEmailSchema.required(),
+      name: storeNameSchema,
+      description: storeDescriptionSchema,
+      businessEmail: storeBusinessEmailSchema,
     }),
     onSubmit: async function (values) {
       try {
         const res = await mutation.mutateAsync(values);
-        // console.log(res);
-        return res;
+        console.log(res);
+        return res.data;
       } catch (error) {
         console.log(error);
       }
@@ -51,27 +43,18 @@ export function StoreModalForm() {
   });
   return (
     <>
-      <button
-        className="btn btn-primary"
-        style={{ width: "100px" }}
-        data-bs-toggle="modal"
-        data-bs-target="#storeFormModal"
-      >
-        new Store
-      </button>
-
       <div
         className="modal fade"
-        id="storeFormModal"
+        id="storeEditFormModal"
         tabIndex="-1"
-        aria-labelledby="storeFormModal"
+        aria-labelledby="storeEditFormModal"
         aria-hidden="true"
       >
         <div className="modal-dialog modal-xl modal-lg modal-sm modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="storeFormModal">
-                create new Store
+              <h1 className="modal-title fs-5" id="storeEditFormModal">
+                Edit Store
               </h1>
               <button
                 type="button"
@@ -149,7 +132,7 @@ export function StoreModalForm() {
                   <div>
                     {mutation.isPending ? (
                       <>
-                        <small>creating new Store...</small>
+                        <small>editing Store...</small>
                       </>
                     ) : mutation.isError ? (
                       <>
@@ -157,7 +140,7 @@ export function StoreModalForm() {
                       </>
                     ) : mutation.isSuccess ? (
                       <>
-                        <small>created store successfully</small>
+                        <small>edited store successfully</small>
                       </>
                     ) : null}
                   </div>
@@ -167,9 +150,8 @@ export function StoreModalForm() {
                     data-bs-dismiss="modal"
                     disabled={formik.isSubmitting}
                   >
-                    Create
+                    Edit
                   </button>
-                  {/* <div className="modal-footer"> */}
                   <button
                     type="button"
                     className="btn btn-secondary"
@@ -177,7 +159,6 @@ export function StoreModalForm() {
                   >
                     Close
                   </button>
-                  {/* </div> */}
                 </form>
               </div>
             </div>
@@ -188,63 +169,53 @@ export function StoreModalForm() {
   );
 }
 
-export function Store() {
-  const { status, data, error } = useQuery({
-    queryKey: ["stores"],
-    queryFn: fetchStores,
-    staleTime: 30000,
-  });
-  async function fetchStores() {
+export function StoreDeleteForm({ storeObj }) {
+  const queryClient = useQueryClient();
+  async function handleDelete() {
     try {
-      const stores = await ax.get("/admin/store/", { withCredentials: true });
-      return stores;
+      const res = await ax.delete(`/admin/store/${storeObj.slug}`);
+      queryClient.invalidateQueries({ queryKey: ["stores"] });
+      return res.data;
     } catch (error) {
       console.log(error);
     }
   }
   return (
     <>
-      <div className="col">
-        {status === "pending" ? (
-          <>
-            <p>loading...</p>
-          </>
-        ) : status === "error" ? (
-          <>
-            <p>An error occured</p>
-          </>
-        ) : (
-          data?.data?.map((obj) => {
-            return (
-              <div
-                key={obj._id}
-                className="p-2 border border-primary rounded-4"
+      <div className="modal" id="storeDeleteFormModal" tabIndex="-1">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Delete Store?</h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <p>Do you want to delete {storeObj.name}</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
               >
-                <p>{obj.name}</p>
-                <p>{obj.description}</p>
-                <p>{obj.businessEmail}</p>
-                <div>
-                  <button
-                    className="btn btn-primary m-1"
-                    data-bs-toggle="modal"
-                    data-bs-target="#storeEditFormModal"
-                  >
-                    <i className="bi bi-pencil"></i>
-                  </button>
-                  <StoreEditForm storeObj={obj} />
-                  <button
-                    className="btn btn-danger"
-                    data-bs-toggle="modal"
-                    data-bs-target="#storeDeleteFormModal"
-                  >
-                    <i className="bi bi-trash"></i>
-                  </button>
-                  <StoreDeleteForm storeObj={obj} />
-                </div>
-              </div>
-            );
-          })
-        )}
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={handleDelete}
+                data-bs-dismiss="modal"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

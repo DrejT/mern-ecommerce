@@ -353,9 +353,9 @@ export function ItemContent({ storeSelection }) {
     }
   }
   // const itemsList = queryClient.getQueryData(["items"]);
-  console.log("items is", data);
-  console.log("storeseleciton is", storeSelection);
-  console.log("status is", status);
+  // console.log("items is", data);
+  // console.log("storeseleciton is", storeSelection);
+  // console.log("status is", status);
   return (
     <>
       {

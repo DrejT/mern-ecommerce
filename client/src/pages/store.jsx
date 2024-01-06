@@ -5,7 +5,6 @@ import ax from "../utils/axios";
 
 export default function Store() {
   const { pathname } = useResolvedPath();
-  console.log(pathname.split("item").length)
   return (
     <>
       <div className="container">
@@ -48,14 +47,18 @@ function DisplayStore() {
           </div>
           <div className="row">
             {data.items.map((itemObj) => {
-              return (
-                <div
-                  key={itemObj._id}
-                  className="col col-md-3 col-12 d-flex justify-content-center"
-                >
-                  <ItemCard itemObj={itemObj} storeObj={data} />
-                </div>
-              );
+              if (itemObj.onShelf) {
+                return (
+                  <div
+                    key={itemObj._id}
+                    className="col col-md-3 col-12 d-flex justify-content-center"
+                  >
+                    <ItemCard itemObj={itemObj} storeObj={data} />
+                  </div>
+                );
+              } else {
+                return <>this store has no items</>;
+              }
             })}
           </div>
         </>

@@ -10,22 +10,22 @@ const {
 const {
   validateStoreCreateSchema,
   validateStoreGetSchema,
-  validateStoreDeleteSchema,
   validateStoreEditSchema,
 } = require("../middlewares/store.middleware");
-const { authorizeUserSession } = require("../utils/session");
+const { authorizeAdminSession } = require("../utils/session");
 
 const router = new express.Router();
 
-router.use(authorizeUserSession);
+// router.use(authorizeUserSession);
+router.use(authorizeAdminSession);
 
 router.get("/:id", validateStoreGetSchema, getStore);
 router.get("/", getAllAdminStore);
 
 router.post("/", validateStoreCreateSchema, createStore);
 
-router.patch("/", validateStoreEditSchema, editStore);
+router.patch("/:slug", validateStoreEditSchema, editStore);
 
-router.delete("/:id", validateStoreDeleteSchema, deleteStore);
+router.delete("/:slug", deleteStore);
 
 module.exports = router;
