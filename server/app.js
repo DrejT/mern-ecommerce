@@ -15,6 +15,7 @@ const adminRouter = require("./src/routes/admin.route");
 const storeRouter = require("./src/routes/store.route");
 const itemRouter = require("./src/routes/item.route");
 const reviewRouter = require("./src/routes/review.route");
+const orderRouter = require("./src/routes/order.route");
 const { createSession } = require("./src/utils/session");
 const upload = require("./src/utils/multer");
 const { revalidateUserSession } = require("./src/utils/session");
@@ -54,6 +55,7 @@ app.use("/admin", adminRouter);
 app.use("/admin/store", storeRouter);
 app.use("/admin/item", itemRouter);
 app.use("/admin/review", reviewRouter);
+app.use("/admin/order", orderRouter);
 
 // error handling
 app.use(async (req, res, next) => {

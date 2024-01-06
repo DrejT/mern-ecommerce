@@ -78,7 +78,8 @@ function ItemOrder({ item }) {
     onSubmit: async function (values) {
       try {
         values.for = item._id;
-        const res = await ax.post("/user/order", orderObj, {
+        values.storeId = item.storeId;
+        const res = await ax.post("/user/order", values, {
           headers: { "Content-Type": "application/json" },
         });
         console.log(res);

@@ -8,6 +8,7 @@ import {
   DashboardItemDelete,
   DashboardItemEdit,
 } from "../../components/item.dashboard";
+import { SelectStore } from "../../components/store.dashboard";
 
 export const itemNameSchema = string()
   .min(3, "minimum 3 characters")
@@ -36,7 +37,6 @@ const itemValidationSchema = object().shape({
 
 export function ItemSelection({ setStoreSelection, storeSelection }) {
   const queryClient = useQueryClient();
-  const stores = queryClient.getQueryData(["stores"]); // for store selection in option
   const mutation = useMutation({
     mutationFn: (newItemObj) => {
       return ax.post("/admin/item", newItemObj, {
@@ -82,21 +82,11 @@ export function ItemSelection({ setStoreSelection, storeSelection }) {
   const [itemImage, setItemImage] = useState("");
   return (
     <>
-      <div className="d-inline">
-        <select
-          id="storeSelection"
-          value={storeSelection}
-          onChange={(e) => setStoreSelection(e.target.value)}
-        >
-          <option value="">select a store</option>
-          {stores?.data?.map((store) => {
-            return (
-              <option key={store._id} value={store._id}>
-                {store.name}
-              </option>
-            );
-          })}
-        </select>
+      <div className="">
+        <SelectStore
+          storeSelection={storeSelection}
+          setStoreSelection={setStoreSelection}
+        />
         <button
           className="btn btn-primary"
           style={{ width: "100px" }}
@@ -342,6 +332,7 @@ export function ItemContent({ storeSelection }) {
   });
   async function fetchItems() {
     try {
+      console.log("sending req", storeSelection);
       const items = await ax.get("/admin/item/");
       return items;
     } catch (error) {

@@ -25,6 +25,18 @@ async function getUserReview(req, res, next) {
   }
 }
 
+async function getAllReview(req, res, next) {
+  try {
+    const reviews = await ReviewModel.find({});
+    if (!reviews) {
+      return res.status(200).send("No reviews available");
+    }
+    res.status(200).send(reviews);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function createReview(req, res, next) {
   try {
     const item = await ItemModel.findById(req.result.item);
@@ -77,6 +89,7 @@ async function deleteReview(req, res, next) {
 module.exports = {
   getReview,
   getUserReview,
+  getAllReview,
   createReview,
   editReview,
   deleteReview,

@@ -4,6 +4,7 @@ const {
   editReview,
   deleteReview,
   getReview,
+  getAllReview,
 } = require("../controllers/review.controller");
 const {
   validateReviewGetSchema,
@@ -11,7 +12,10 @@ const {
   validateReviewDeleteSchema,
   validateReviewEditSchema,
 } = require("../middlewares/review.middleware");
-const { authorizeUserSession } = require("../utils/session");
+const {
+  authorizeUserSession,
+  authorizeAdminSession,
+} = require("../utils/session");
 
 const router = new express.Router();
 
@@ -27,5 +31,6 @@ router.post(
 router.patch("/", validateReviewEditSchema, editReview);
 
 router.delete("/:id", validateReviewDeleteSchema, deleteReview);
+router.get("/", authorizeAdminSession, getAllReview);
 
 module.exports = router;

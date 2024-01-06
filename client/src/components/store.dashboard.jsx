@@ -8,6 +8,28 @@ import {
 } from "../pages/dashboard/stores";
 import ax from "../utils/axios";
 
+export function SelectStore({ storeSelection, setStoreSelection }) {
+  const queryClient = useQueryClient();
+  const stores = queryClient.getQueryData(["stores"]);
+  return (
+    <select
+      id="storeSelection"
+      value={storeSelection}
+      className="m-2"
+      onChange={(e) => setStoreSelection(e.target.value)}
+    >
+      <option value="">select a store</option>
+      {stores?.data?.map((store) => {
+        return (
+          <option key={store._id} value={store._id}>
+            {store.name}
+          </option>
+        );
+      })}
+    </select>
+  );
+}
+
 export function StoreEditForm({ storeObj }) {
   const queryClient = useQueryClient();
   const mutation = useMutation({

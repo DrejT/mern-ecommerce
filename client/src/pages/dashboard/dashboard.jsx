@@ -4,10 +4,13 @@ import { useState } from "react";
 import { StoreModalForm, Store } from "./stores";
 // import Item from "./items";
 import { ItemSelection, ItemContent } from "./items";
+import { OrderSelection, Orders } from "./orders";
+import { ReviewSelection, Reviews } from "./reviews";
 
 export default function Dashboard() {
   const [currentlyActive, setCurrentlyActive] = useState("store");
   const [storeSelection, setStoreSelection] = useState("");
+  const [itemSelection, setItemSelection] = useState("");
   return (
     <>
       <div className="container-fluid p-5">
@@ -36,6 +39,8 @@ export default function Dashboard() {
               currentlyActive={currentlyActive}
               storeSelection={storeSelection}
               setStoreSelection={setStoreSelection}
+              itemSelection={itemSelection}
+              setItemSelection={setItemSelection}
             />
           </div>
           <div id="content" className="col">
@@ -43,6 +48,7 @@ export default function Dashboard() {
               <DashboardContent
                 currentlyActive={currentlyActive}
                 storeSelection={storeSelection}
+                itemSelection={itemSelection}
               />
             </div>
           </div>
@@ -106,14 +112,14 @@ function DashboardMenu({ setCurrentlyActive, currentlyActive }) {
   );
 }
 
-function DashboardContent({ currentlyActive, storeSelection }) {
+function DashboardContent({ currentlyActive, storeSelection, itemSelection }) {
   switch (currentlyActive) {
     case "items":
       return <ItemContent storeSelection={storeSelection} />;
     case "orders":
-      return <OrderSection />;
+      return <Orders storeSelection={storeSelection} />;
     case "reviews":
-      return <ReviewSection />;
+      return <Reviews itemSelection={itemSelection} />;
     case "settings":
       return <SettingSection />;
     default:
@@ -121,7 +127,13 @@ function DashboardContent({ currentlyActive, storeSelection }) {
   }
 }
 
-function Selection({ currentlyActive, setStoreSelection, storeSelection }) {
+function Selection({
+  currentlyActive,
+  setStoreSelection,
+  storeSelection,
+  itemSelection,
+  setItemSelection,
+}) {
   switch (currentlyActive) {
     case "items":
       return (
@@ -131,18 +143,26 @@ function Selection({ currentlyActive, setStoreSelection, storeSelection }) {
         />
       );
     case "orders":
-      return <></>;
+      return (
+        <OrderSelection
+          setStoreSelection={setStoreSelection}
+          storeSelection={storeSelection}
+        />
+      );
     case "reviews":
-      return <></>;
+      return (
+        <ReviewSelection
+          setStoreSelection={setStoreSelection}
+          storeSelection={storeSelection}
+          itemSelection={itemSelection}
+          setItemSelection={setItemSelection}
+        />
+      );
     case "settings":
       return <></>;
     default:
       return <StoreModalForm />;
   }
-}
-
-export function OrderSection() {
-  return <></>;
 }
 
 export function ReviewSection() {
@@ -152,4 +172,3 @@ export function ReviewSection() {
 export function SettingSection() {
   return <></>;
 }
-

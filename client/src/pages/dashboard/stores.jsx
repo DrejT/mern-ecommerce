@@ -50,7 +50,7 @@ export function StoreModalForm() {
   return (
     <>
       <button
-        className="btn btn-primary"
+        className="btn btn-primary m-1"
         style={{ width: "100px" }}
         data-bs-toggle="modal"
         data-bs-target="#storeFormModal"
