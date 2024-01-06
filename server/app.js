@@ -14,11 +14,10 @@ const userRouter = require("./src/routes/user.route");
 const adminRouter = require("./src/routes/admin.route");
 const storeRouter = require("./src/routes/store.route");
 const itemRouter = require("./src/routes/item.route");
-const orderRouter = require("./src/routes/order.route");
 const reviewRouter = require("./src/routes/review.route");
 const { createSession } = require("./src/utils/session");
 const upload = require("./src/utils/multer");
-const { revalidateUserSession } = require("./src/middlewares/auth.middleware");
+const { revalidateUserSession } = require("./src/utils/session");
 // express config
 const app = express();
 app.use(express.json());
@@ -48,9 +47,8 @@ app.post("/upload", upload.single("itemImage"), async (req, res, next) => {
   }
 });
 
-// app.use("/session", revalidateUserSession);
+app.use("/session", revalidateUserSession);
 app.use("/auth", authRouter);
-// app.use("/user/order", orderRouter);
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/admin/store", storeRouter);

@@ -1,5 +1,4 @@
 const express = require("express");
-const { getStore } = require("../controllers/store.controller");
 const {
   createReview,
   editReview,
@@ -12,7 +11,7 @@ const {
   validateReviewDeleteSchema,
   validateReviewEditSchema,
 } = require("../middlewares/review.middleware");
-const { authorizeUserSession } = require("../middlewares/auth.middleware");
+const { authorizeUserSession } = require("../utils/session");
 
 const router = new express.Router();
 

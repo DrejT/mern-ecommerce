@@ -13,11 +13,11 @@ const {
   validateStoreDeleteSchema,
   validateStoreEditSchema,
 } = require("../middlewares/store.middleware");
-const { authorizeAdminSession } = require("../middlewares/auth.middleware");
+const { authorizeUserSession } = require("../utils/session");
 
 const router = new express.Router();
 
-router.use(authorizeAdminSession);
+router.use(authorizeUserSession);
 
 router.get("/:id", validateStoreGetSchema, getStore);
 router.get("/", getAllAdminStore);

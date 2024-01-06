@@ -24,9 +24,7 @@ async function orderCreate(req, res, next) {
 
 async function orderGet(req, res, next) {
   try {
-    console.log("result", req.result);
     const orders = await OrderModel.find({ by: req.result }).populate("for");
-    console.log("orders", orders);
     res.status(200).send(orders);
   } catch (error) {
     next(error);

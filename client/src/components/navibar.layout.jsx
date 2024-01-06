@@ -14,31 +14,29 @@ export default function NavigationBar() {
       const res = await ax.delete("/auth/logout");
       setIsLoggedIn(false);
       setAuthUser(null);
-      console.log(res);
       redirect("/");
     } catch (error) {
       console.log(error);
     }
   }
-  // const { data, status, error } = useQuery({
-  //   queryKey: ["user"],
-  //   queryFn: getUserSession,
-  //   staleTime: 30000,
-  // });
+  useQuery({
+    queryKey: ["user"],
+    queryFn: getUserSession,
+    staleTime: 30000,
+  });
 
-  // async function getUserSession() {
-  //   try {
-  //     const res = await ax.get("/session");
-  //     console.log(res)
-  //     if (res.data) {
-  //       setAuthUser(res.data);
-  //       setIsLoggedIn(true);
-  //     }
-  //     return res.data;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  async function getUserSession() {
+    try {
+      const res = await ax.get("/session");
+      if (res.data) {
+        setAuthUser(res.data);
+        setIsLoggedIn(true);
+      }
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -117,7 +115,7 @@ export default function NavigationBar() {
                 <>
                   <li className="nav-item">
                     <NavLink className="nav-link" to="/" onClick={handleLogout}>
-                      Logout
+                      logout
                     </NavLink>
                   </li>
                 </>
