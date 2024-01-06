@@ -52,11 +52,8 @@ async function validateItemGetAllSchema(req, res, next) {
 
 async function validateItemEditSchema(req, res, next) {
   try {
-    const result = await itemEditSchema.validateAsync(req.body.data);
-    const resultId = await mongoIdObjectSchema.validateAsync(req.body.itemId);
-    req.result = {};
-    req.result.data = result;
-    req.result.id = resultId;
+    const result = await itemEditSchema.validateAsync(req.body);
+    req.result = result;
     next();
   } catch (error) {
     handleJoiError(error);

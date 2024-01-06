@@ -3,39 +3,35 @@ import { useFormik } from "formik";
 import { boolean, number, object, string } from "yup";
 import ax from "../../utils/axios";
 import { useState } from "react";
+import {
+  DashboardItem,
+  DashboardItemDelete,
+  DashboardItemEdit,
+} from "../../components/item.dashboard";
+
+export const itemNameSchema = string()
+  .min(3, "minimum 3 characters")
+  .max(100, "maximum 100 characters");
+
+export const itemDescriptionSchema = string()
+  .min(10, "minimum 10 characters")
+  .max(250, "maximum 250 characters");
+export const itemSaleSchema = number()
+  .min(0, "cannot be lower than 0%")
+  .max(100, "cannot exceed 100%");
+export const itemPriceSchema = number().min(0, "cannot be negative");
+export const itemQuantitySchema = number()
+  .min(0, "cannot be less than 0")
+  .integer("sould be an integer");
+export const itemOnShelfSchema = boolean();
 
 const itemValidationSchema = object().shape({
-  name: string()
-    .min(3, "minimum 3 characters")
-    .max(100, "maximum 100 characters")
-    .required("item name is required"),
-  description: string()
-    .min(10, "minimum 10 characters")
-    .max(250, "maximum 250 characters")
-    .required("item description is required"),
-  // itemImage: mixed().required("Image is required"),
-  // .test("fileSize", "File size is too large", (files) => {
-  //   let valid = true;
-  //   if (files) {
-  //     files.map((file) => {
-  //       const size = file.size / 1024 / 1024;
-  //       if (size > 10) {
-  //         valid = false;
-  //       }
-  //     });
-  //   }
-  //   return valid;
-  // })
-  sale: number()
-    .min(0, "cannot be lower than 0%")
-    .max(100, "cannot exceed 100%")
-    .required("sale percent is required"),
-  price: number().min(0, "cannot be negative").required("price is required"),
-  quantity: number()
-    .min(0, "cannot be less than 0")
-    .integer("sould be an integer")
-    .required("quantity is required"),
-  onShelf: boolean(),
+  name: itemNameSchema.required("item name is required"),
+  description: itemDescriptionSchema.required("item description is required"),
+  sale: itemSaleSchema.required("sale percent is required"),
+  price: itemPriceSchema.required("price is required"),
+  quantity: itemQuantitySchema.required("quantity is required"),
+  onShelf: itemOnShelfSchema,
 });
 
 export function ItemSelection({ setStoreSelection, storeSelection }) {
@@ -352,39 +348,64 @@ export function ItemContent({ storeSelection }) {
       console.log(error);
     }
   }
-  // const itemsList = queryClient.getQueryData(["items"]);
-  // console.log("items is", data);
-  // console.log("storeseleciton is", storeSelection);
-  // console.log("status is", status);
   return (
     <>
-      {
-        <div className="col">
-          {status === "pending" ? (
-            <>
-              <p>loading...</p>
-            </>
-          ) : status === "error" && storeSelection ? (
-            <>
-              <p>An error occured while fetching items</p>
-            </>
-          ) : typeof data.data === "string" ? (
-            <>No stores to fetch data from </>
-          ) : (
-            data?.data?.map((obj) => {
-              if (storeSelection === obj.storeId) {
-                return (
-                  <div key={obj._id}>
-                    <p>{obj.name}</p>
-                  </div>
-                );
-              } else {
-                return null;
-              }
-            })
-          )}
-        </div>
-      }
+      {status === "pending" ? (
+        <>
+          <p>loading...</p>
+        </>
+      ) : status === "error" && storeSelection ? (
+        <>
+          <p>An error occured while fetching items</p>
+        </>
+      ) : typeof data.data === "string" ? (
+        <>No stores to fetch data from </>
+      ) : (
+        data?.data?.map((obj) => {
+          if (storeSelection === obj.storeId) {
+            return (
+              <div key={obj._id} className="col col-md-3 col-12 p-0 m-2">
+                <div
+                  className="p-2 border border-primary rounded-2"
+                  role="button"
+                  data-bs-toggle="modal"
+                  data-bs-target={`#${obj.slug}`}
+                >
+                  <h5 className="">{obj.name}</h5>
+                  <p>
+                    description: {obj.description.slice(0, 10)}
+                    <br />
+                    price: {obj.price}
+                    <br />
+                    on shelf: {obj.onShelf ? "yes" : "no"}
+                    <br />
+                    quantity: {obj.quantity}
+                  </p>
+                  <button
+                    className="btn btn-primary m-1"
+                    data-bs-toggle="modal"
+                    data-bs-target={`#${obj.slug}Edit`}
+                  >
+                    <i className="bi bi-pencil"></i>
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target={`#${obj.slug}Delete`}
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
+                </div>
+                <DashboardItemEdit itemObj={obj} />
+                <DashboardItemDelete itemObj={obj} />
+                <DashboardItem itemObj={obj} />
+              </div>
+            );
+          } else {
+            return null;
+          }
+        })
+      )}
     </>
   );
 }

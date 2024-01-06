@@ -2,9 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { object, string } from "yup";
 import ax from "../../utils/axios";
 import { useFormik } from "formik";
-import { StoreDeleteForm, StoreEditForm } from "../../components/storeEditForm";
-
-// form validation schema
+import { StoreDeleteForm, StoreEditForm } from "../../components/store.dashboard";
 
 export const storeNameSchema = string()
   .min(3, "minimum 3 characters")
@@ -227,7 +225,7 @@ export function Store() {
                   <button
                     className="btn btn-primary m-1"
                     data-bs-toggle="modal"
-                    data-bs-target="#storeEditFormModal"
+                    data-bs-target={`#${obj.slug}Edit`}
                   >
                     <i className="bi bi-pencil"></i>
                   </button>
@@ -235,7 +233,7 @@ export function Store() {
                   <button
                     className="btn btn-danger"
                     data-bs-toggle="modal"
-                    data-bs-target="#storeDeleteFormModal"
+                    data-bs-target={`#${obj.slug}Delete`}
                   >
                     <i className="bi bi-trash"></i>
                   </button>

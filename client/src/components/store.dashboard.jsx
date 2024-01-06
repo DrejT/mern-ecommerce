@@ -45,15 +45,15 @@ export function StoreEditForm({ storeObj }) {
     <>
       <div
         className="modal fade"
-        id="storeEditFormModal"
+        id={`${storeObj.slug}Edit`}
         tabIndex="-1"
-        aria-labelledby="storeEditFormModal"
+        aria-labelledby="storeEditFormLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog modal-xl modal-lg modal-sm modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="storeEditFormModal">
+              <h1 className="modal-title fs-5" id="storeEditFormLabel">
                 Edit Store
               </h1>
               <button
@@ -182,7 +182,7 @@ export function StoreDeleteForm({ storeObj }) {
   }
   return (
     <>
-      <div className="modal" id="storeDeleteFormModal" tabIndex="-1">
+      <div className="modal" id={`${storeObj.slug}Delete`} tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
