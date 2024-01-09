@@ -41,7 +41,6 @@ function RegisterForm() {
     onSubmit: async function (values) {
       try {
         const responseData = await ax.post("/auth/register", values, {
-          withCredentials: true,
           headers: { "Content-Type": "application/json" },
         });
         // const res = await ax.get("/admin/store/mystore");

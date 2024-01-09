@@ -23,6 +23,7 @@ const { revalidateUserSession } = require("./src/utils/session");
 const app = express();
 app.use(express.json());
 
+console.log(process.env.DOMAIN_NAME)
 const corsOptions = {
   origin: process.env.DOMAIN_NAME,
   credentials: true,

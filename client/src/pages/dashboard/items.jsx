@@ -80,6 +80,7 @@ export function ItemSelection({ setStoreSelection, storeSelection }) {
   });
 
   const [itemImage, setItemImage] = useState("");
+  console.log(itemImage);
   return (
     <>
       <div className="">

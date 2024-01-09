@@ -40,10 +40,10 @@ function ShowStores() {
     <>
       {status === "pending" ? (
         <>loading</>
-      ) : data.length === 0 ? (
+      ) : status === "success" && data.length === 0 ? (
         <>no stores to display </>
-      ) : (
-        data.map((storeObj) => {
+      ) : status === "success" ? (
+        data.map(function (storeObj) {
           queryClient.setQueryData([storeObj.slug], storeObj);
           return (
             <div key={storeObj._id} className="row store-row py-2 mt-3">
@@ -87,7 +87,7 @@ function ShowStores() {
             </div>
           );
         })
-      )}
+      ) : null}
     </>
   );
 }

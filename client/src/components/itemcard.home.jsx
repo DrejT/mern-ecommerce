@@ -12,7 +12,7 @@ export function ItemCard({ itemObj, storeObj }) {
         }
       >
         <div className="item-card p-2 text-align-center">
-          <img src="" alt="" style={{ width: "150px", height: "150px" }} />
+          <img src={itemObj.imageUrl} alt="" style={{ width: "150px", height: "150px" }} />
           <p className="">{itemObj.name}</p>
         </div>
       </Link>

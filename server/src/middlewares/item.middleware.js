@@ -1,6 +1,4 @@
-const itemModel = require("../models/item.model");
 require("dotenv").config();
-const axios = require("axios");
 const {
   ItemCreateSchema,
   itemGetSchema,
@@ -10,6 +8,14 @@ const {
   itemGetAllSchema,
 } = require("./../utils/validateschema");
 const { handleJoiError } = require("./../utils/validateschema");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 // const ax = require("../utils/axios");
 
 async function validateItemCreateSchema(req, res, next) {
@@ -74,21 +80,15 @@ async function validateItemDeleteSchema(req, res, next) {
 
 async function uploadImage(req, res, next) {
   try {
-    // console.log("logging image in upload", req.file);
-    // const base64String = req.file.buffer.toString("base64");
-    // const formdata = new FormData();
-    // formdata.append("image", base64String);
-    // const res = await axios.post(
-    //   `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`,
-    //   formdata,
-    //   {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //       // key: process.env.IMGBB_API_KEY,
-    //     },
-    //   }
-    // );
-    // console.log("res is", res);
+    const uploadResult = await new Promise((resolve) => {
+      cloudinary.uploader
+        .upload_stream((error, uploadResult) => {
+          console.log(uploadResult);
+          return resolve(uploadResult);
+        })
+        .end(req.file.buffer);
+    });
+    req.result.imageUrl = uploadResult.url;
     next();
   } catch (error) {
     handleJoiError(error);
