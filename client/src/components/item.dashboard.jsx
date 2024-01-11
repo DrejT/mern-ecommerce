@@ -37,7 +37,9 @@ export function DashboardItem({ itemObj }) {
             <div className="modal-body">
               <div className="container-fluid">
                 <div className="row">
-                  <div className="col col-6">images herre</div>
+                  <div className="col col-6">
+                    <img src={itemObj.immageUrl} alt={itemObj.slug} />
+                  </div>
                   <div className="col col-6">
                     <p>{itemObj.description}</p>
                     price<p>{itemObj.price}</p>
