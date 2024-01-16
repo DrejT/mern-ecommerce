@@ -49,6 +49,7 @@ function LoginForm() {
         // const user = await ax.get("/auth/" + responseData.data.user.id, {
         //   withCredentials: true,
         // });
+        console.log("login", responseData);
         if (responseData?.status === 200) {
           queryClient.setQueryData("user", responseData.data.user);
           setFormStatus({ res: "loggedin successfully!", stat: true });

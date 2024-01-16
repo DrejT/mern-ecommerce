@@ -18,6 +18,8 @@ export default function NavigationBar() {
       console.log(error);
     }
   }
+  console.log("logind?", isLoggedIn);
+  console.log("user", authUser);
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
