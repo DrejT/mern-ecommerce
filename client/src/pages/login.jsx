@@ -55,10 +55,10 @@ function LoginForm() {
           setFormStatus({ res: "loggedin successfully!", stat: true });
           setAuthUser(responseData.data.user);
           setIsLoggedIn(true);
-          if (responseData?.data?.user?.role === "admin") {
-            navigate(`/dashboard`);
-          } else {
+          if (responseData?.data?.user?.role === "user") {
             navigate("/u/" + responseData.data.user.username);
+          } else {
+            navigate(`/dashboard`);
           }
         }
       } catch (error) {
