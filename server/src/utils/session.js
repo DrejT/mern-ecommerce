@@ -13,11 +13,13 @@ const sessionOptions = {
   secret: process.env.SESSION_ID_SECRET,
   store: redisStore,
   name: CookieName,
-  sameSite: "lax",
+  sameSite: "none",
   cookie: {
+    domain: "example.com", // frontend domain
     maxAge: 1000 * 86400 * 3,
     httpOnly: true,
-    secure: false,
+    secure: true,
+    path: "/",
   },
   resave: false,
   saveUninitialized: false,
@@ -37,8 +39,11 @@ async function authorizeUserSession(req, res, next) {
 
 async function revalidateUserSession(req, res, next) {
   try {
+    console.log("session is", req.session);
     if (req.session.user) {
       return res.status(200).send(req.session.user);
+    } else {
+      return res.status(404).send(req.session);
     }
   } catch (error) {
     next(error);
@@ -47,6 +52,7 @@ async function revalidateUserSession(req, res, next) {
 
 async function authorizeAdminSession(req, res, next) {
   try {
+    console.log(req.file);
     if (!(req.session?.user?.role === "admin")) {
       throw createError.Unauthorized("You are unauthorized");
     }

@@ -32,20 +32,20 @@ app.use(cors(corsOptions));
 app.use(createSession);
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", process.env.DOMAIN_NAME);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
 
 // routes config
 app.get("/", async (req, res) => {
-  // console.log(req.session);
-  console.log(req.cookies);
   res.send("hello world");
-});
-app.post("/upload", upload.single("itemImage"), async (req, res, next) => {
-  try {
-    console.log(req.file);
-    next();
-  } catch (error) {
-    console.log(error);
-  }
 });
 
 app.use("/session", revalidateUserSession);
@@ -71,6 +71,8 @@ app.use(async (err, req, res, next) => {
 });
 
 // start server
-app.listen(process.env.PORT, () =>
+const server = app.listen(process.env.PORT, () =>
   console.log(`server started on ${process.env.PORT}`)
 );
+
+server.timeout = 3000;
